@@ -1,3 +1,9 @@
+// React 컴포넌트 파일: todoListContainer 컴포넌트 기능
+/*
+  파일: todoListContainer.jsx
+  설명: React 컴포넌트 파일: todoListContainer 컴포넌트 기능을 구현합니다.
+*/
+
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { getTodoList } from "../../apis/todoApi";

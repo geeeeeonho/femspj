@@ -1,3 +1,9 @@
+// React 컴포넌트 파일: todoRouter 컴포넌트 기능
+/*
+  파일: todoRouter.jsx
+  설명: React 컴포넌트 파일: todoRouter 컴포넌트 기능을 구현합니다.
+*/
+
 import { lazy, Suspense } from "react";
 
 import TodoIndexPage from "../pages/todo/todoIndexPag";

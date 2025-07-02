@@ -1,3 +1,9 @@
+// React 컴포넌트 파일: App 컴포넌트 기능
+/*
+  파일: App.jsx
+  설명: React 컴포넌트 파일: App 컴포넌트 기능을 구현합니다.
+*/
+
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
