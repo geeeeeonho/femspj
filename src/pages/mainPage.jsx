@@ -5,16 +5,17 @@
 */
 
 import BasicLayout from "../layouts/basicLayout";
-
+import BaseGraphComponent from "../components/graph/baseGraph";
 
 function MainPage() {
-    return ( 
-        <BasicLayout>
-            <div>
-                <h1>Main Page</h1>
-            </div>
-        </BasicLayout>
-     );
+  return (
+    <BasicLayout>
+      <div className="p-4 space-y-6">
+        <h1 className="text-2xl font-bold">Main Page</h1>
+        <BaseGraphComponent />
+      </div>
+    </BasicLayout>
+  );
 }
 
 export default MainPage;
