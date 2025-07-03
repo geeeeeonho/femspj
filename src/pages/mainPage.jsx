@@ -17,7 +17,7 @@ function MainPage() {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      navigate("/login"); // 로그인 안된 경우 로그인 페이지로 이동
+      navigate("/auth"); // 로그인 안된 경우 로그인 페이지로 이동
     }
   }, [isLoggedIn, navigate]);
 

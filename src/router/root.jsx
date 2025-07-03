@@ -16,7 +16,7 @@ const Loading = () => <div>Loading....</div>
 
 const Main = lazy(() => import("../pages/mainPage"))
 const About = lazy(() => import("../pages/aboutPage"))
-const Login = lazy(() => import("../pages/loginPage"));
+const Auth = lazy(() => import("../pages/authPage"));
 
 
 const router = createBrowserRouter([
@@ -30,8 +30,12 @@ const router = createBrowserRouter([
     element: <Suspense fallback={<Loading/>}><About/></Suspense>,
 },
 {
-  path: "/login",
-  element: <Suspense fallback={<Loading />}><Login /></Suspense>,
+  path: "/auth",
+  element: (
+    <Suspense fallback={<Loading />}>
+      <Auth/>
+    </Suspense>
+  ),
 },
 todoRouter()
 ]);
