@@ -66,7 +66,9 @@ const router = createBrowserRouter([
   path: "/realtime",
   element: (
     <Suspense fallback={<Loading />}>
-      <RealTime />
+      <BasicLayout>
+        <RealTime />
+      </BasicLayout>
     </Suspense>
     ),
   },

@@ -1,5 +1,5 @@
 // 📄 파일: src/components/menu/leftMenu.jsx
-// 📌 좌측 메뉴바 (적당한 크기의 이미지 + 작은 설명 텍스트)
+// 📌 좌측 메뉴바 (TopMenu에 가려지지 않도록 top offset 및 높이 설정)
 
 import { NavLink } from "react-router-dom";
 
@@ -7,11 +7,12 @@ function LeftMenuComponent() {
   const linkClass =
     "flex flex-col items-center space-y-1 text-white px-2 py-4 hover:bg-gray-700 rounded transition text-sm";
 
-  const iconStyle = "w-12 h-12"; // ✅ 이미지 크기 약간 키움 (48x48px)
+  const iconStyle = "w-12 h-12";
 
   return (
-    <aside className="bg-gray-900 text-white w-24 min-h-screen flex flex-col items-center py-4 space-y-4">
-      {/* 전력 소비 분석 메뉴 */}
+    <div className="bg-gray-900 text-white w-24 h-full pt-16 fixed left-0 top-0 z-30 flex flex-col items-center space-y-4">
+      {/* ⬆ pt-16: TopMenu 높이만큼 위에 여백을 줘서 겹치지 않도록 함 */}
+
       <NavLink
         to="/power"
         className={({ isActive }) =>
@@ -22,25 +23,21 @@ function LeftMenuComponent() {
         <span>전력 소비</span>
       </NavLink>
 
-      {/* 구분선 */}
       <hr className="w-10 border-gray-600" />
 
-      {/* 실시간 상황 메뉴 (활성화된 NavLink) */}
       <NavLink
         to="/realtime"
         className={({ isActive }) =>
           `${linkClass} ${isActive ? "bg-gray-700 font-semibold" : ""}`
         }
       >
-        <img
-          src="/icons/realtime.png"
-          alt="실시간 상황"
-          className={iconStyle}
-        />
+        <img src="/icons/realtime.png" alt="실시간 상황" className={iconStyle} />
         <span>실시간 상황</span>
       </NavLink>
-    </aside>
+    </div>
   );
 }
+
+
 
 export default LeftMenuComponent;
