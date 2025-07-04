@@ -1,25 +1,22 @@
-// React 컴포넌트 파일: leftMenuComponent
-/*
-  설명:
-  - 사이드바 내에서 페이지 간 이동을 위한 메뉴입니다.
-  - NavLink를 사용하여 새로고침 없이 SPA 전환됩니다.
-*/
+// 📄 파일: src/components/menu/leftMenu.jsx
+// 📌 좌측 메뉴바 (아이콘 + 아래 텍스트 정렬)
 
-import { NavLink } from "react-router-dom"; // ✅ 꼭 react-router-dom에서 가져와야 함!
+import { NavLink } from "react-router-dom";
 
 function LeftMenuComponent() {
   const linkClass =
-    "flex items-center space-x-2 text-white px-4 py-2 hover:bg-gray-700 rounded transition";
+    "flex flex-col items-center space-y-1 text-white px-2 py-4 hover:bg-gray-700 rounded transition text-sm";
 
   return (
-    <nav className="flex-1 p-4 space-y-2">
+    <aside className="bg-gray-900 text-white w-24 min-h-screen flex flex-col items-center py-4">
+      {/* 메뉴 항목들 */}
       <NavLink
         to="/"
         className={({ isActive }) =>
           `${linkClass} ${isActive ? "bg-gray-700 font-semibold" : ""}`
         }
       >
-        <span>🏠</span>
+        <span className="text-2xl">🏠</span>
         <span>홈</span>
       </NavLink>
 
@@ -29,7 +26,7 @@ function LeftMenuComponent() {
           `${linkClass} ${isActive ? "bg-gray-700 font-semibold" : ""}`
         }
       >
-        <span>📘</span>
+        <span className="text-2xl">📘</span>
         <span>소개</span>
       </NavLink>
 
@@ -39,10 +36,10 @@ function LeftMenuComponent() {
           `${linkClass} ${isActive ? "bg-gray-700 font-semibold" : ""}`
         }
       >
-        <span>📝</span>
+        <span className="text-2xl">📝</span>
         <span>할 일</span>
       </NavLink>
-    </nav>
+    </aside>
   );
 }
 
