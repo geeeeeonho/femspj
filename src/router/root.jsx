@@ -26,9 +26,7 @@ const router = createBrowserRouter([
     path: "/auth",
     element: (
       <Suspense fallback={<Loading />}>
-        <BasicLayout>
-          <Auth />
-        </BasicLayout>
+        <Auth />
       </Suspense>
     ),
   },

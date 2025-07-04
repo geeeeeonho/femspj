@@ -8,8 +8,8 @@
 function AuthLayout({ children }) {
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center"
-      style={{ backgroundImage: "url('/images/login-bg.png')" }} // public 폴더에 이미지 필요
+    className="w-full min-h-screen bg-cover bg-center flex items-center justify-center"
+    style={{ backgroundImage: "url('/images/login-bg.png')" }}
     >
       {children}
     </div>
