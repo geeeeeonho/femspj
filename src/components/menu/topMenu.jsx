@@ -11,13 +11,20 @@ function TopMenuComponent() {
   };
 
   return (
-    // ✅ 전체 너비로 가도록 width 설정 X
     <nav className="bg-gray-800 p-4 w-full">
       <div className="flex justify-between items-center">
-        <div className="text-white font-bold text-lg">Easy FEMS</div>
+        {/* 로고 클릭 시 메인(/)으로 이동 */}
+        <NavLink to="/" className="text-white font-bold text-lg hover:underline">
+          Easy FEMS
+        </NavLink>
+
         <div className="space-x-6">
-          <NavLink to="/about" className="text-white hover:underline">소개</NavLink>
-          <button onClick={handleLogout} className="text-white hover:underline">로그아웃</button>
+          <NavLink to="/about" className="text-white hover:underline">
+            소개
+          </NavLink>
+          <button onClick={handleLogout} className="text-white hover:underline">
+            로그아웃
+          </button>
         </div>
       </div>
     </nav>
