@@ -1,28 +1,24 @@
-// 📄 파일: src/pages/powerPage.jsx
 import WeeklyLayout from "../layouts/power/weeklyLayout";
 import MonthlyLayout from "../layouts/power/monthlyLayout";
 import AnalyzeLayout from "../layouts/power/analyzeLayout";
+import ScrollHelperComponent from "../components/power/scrollHelper";
 
 function PowerPage() {
   return (
-    <div className="overflow-y-auto max-h-[calc(100vh-64px)] px-4 py-8 space-y-16 scroll-smooth">
-    {/* 🟠 주간 */}
-    <section id="weekly">
+    <div className="relative">
+      <ScrollHelperComponent />
+
+      <section id="weekly" className="pt-20">
         <WeeklyLayout />
-    </section>
-
-    {/* 🟢 월간 */}
-    <section id="monthly">
+      </section>
+      <section id="monthly" className="pt-20">
         <MonthlyLayout />
-    </section>
-
-    {/* 🔵 분석 */}
-    <section id="analyze">
+      </section>
+      <section id="analyze" className="pt-20">
         <AnalyzeLayout />
-    </section>
+      </section>
     </div>
   );
 }
 
 export default PowerPage;
-
