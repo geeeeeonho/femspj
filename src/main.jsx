@@ -8,10 +8,13 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import router from './router/root'
 import { RouterProvider } from 'react-router-dom'
-import { AuthProvider } from "./contexts/authContext";
+import { AuthProvider } from "./contexts/authContext"
+import { PowerChartProvider } from "./contexts/PowerChartContext" // ✅ 추가
 
 createRoot(document.getElementById('root')).render(
   <AuthProvider>
-    <RouterProvider router={router} />
+    <PowerChartProvider> {/* ✅ PowerChartProvider로 감쌈 */}
+      <RouterProvider router={router} />
+    </PowerChartProvider>
   </AuthProvider>
 );
