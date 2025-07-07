@@ -77,22 +77,23 @@ function MonthlyChartComponent() {
             </tr>
           </thead>
           <tbody>
-            {top7.map((item, idx) => (
-              <tr
-                key={item.date}
-                className={
-                  idx < 3
-                    ? "bg-red-100"
-                    : "bg-orange-100"
-                }
-              >
+          {top7.map((item, idx) => {
+            // 행 색상 및 글꼴 굵기 조건
+            const rowStyle =
+              idx < 3
+                ? "bg-red-100 text-black font-bold"     // 🔴 1위: 빨간 배경 + 진한 글씨
+                : "bg-orange-100 text-black";            // 🧡 4~7위: 주황 배경 + 기본 글씨
+
+            return (
+              <tr key={item.date} className={`border-t border-gray-300 ${rowStyle}`}>
                 <td className="border px-2 py-1">{idx + 1}위</td>
                 <td className="border px-2 py-1">{item.date}일</td>
                 <td className="border px-2 py-1">{item.weekday}</td>
                 <td className="border px-2 py-1">{item.power} kWh</td>
               </tr>
-            ))}
-          </tbody>
+            );
+          })}
+        </tbody>
         </table>
       </div>
     </div>

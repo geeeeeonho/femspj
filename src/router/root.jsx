@@ -20,6 +20,7 @@ const About = lazy(() => import("../pages/aboutPage"));
 const Auth = lazy(() => import("../pages/authPage"));
 const Power = lazy(() => import("../pages/powerPage"));
 const RealTime = lazy(() => import("../pages/realtimePage"));
+const Solution = lazy(() => import("../pages/solutionPage"));
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,16 @@ const router = createBrowserRouter([
     <Suspense fallback={<Loading />}>
       <BasicLayout>
         <RealTime />
+      </BasicLayout>
+    </Suspense>
+    ),
+  },
+  {
+  path: "/solution",
+  element: (
+    <Suspense fallback={<Loading />}>
+      <BasicLayout>
+        <Solution />
       </BasicLayout>
     </Suspense>
     ),

@@ -34,10 +34,21 @@ function LeftMenuComponent() {
         <img src="/icons/realtime.png" alt="실시간 상황" className={iconStyle} />
         <span>실시간 상황</span>
       </NavLink>
+
+      <hr className="w-10 border-gray-600" />
+
+      {/* 🆕 솔루션 메뉴 추가 */}
+      <NavLink
+        to="/solution"
+        className={({ isActive }) =>
+          `${linkClass} ${isActive ? "bg-gray-700 font-semibold" : ""}`
+        }
+      >
+        <img src="/icons/solution.png" alt="솔루션" className={iconStyle} />
+        <span>솔루션</span>
+      </NavLink>
     </div>
   );
 }
-
-
 
 export default LeftMenuComponent;
