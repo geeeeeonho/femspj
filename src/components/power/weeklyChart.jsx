@@ -49,7 +49,7 @@ function WeeklyChartComponent() {
               const color = isTop1
                 ? "#ff4d4f" // 🔴
                 : isTop3
-                ? "#ffa500" // 🟠 밝은 주황
+                ? "#f97316" // 🧡 진한 주황
                 : "#facc15"; // 🟡 노랑
               return (
                 <circle
@@ -81,8 +81,8 @@ function WeeklyChartComponent() {
             {top3.map((item, idx) => {
               const rowStyle =
                 idx === 0
-                  ? "bg-[#ff4d4f] text-black font-bold"
-                  : "bg-[#ffa500] text-black font-semibold";
+                  ? "bg-red-100 text-black font-bold"
+                  : "bg-orange-100 text-black font-semibold";
               return (
                 <tr key={item.day} className={`border-t border-gray-300 ${rowStyle}`}>
                   <td className="px-2 py-1">{idx + 1}위</td>
