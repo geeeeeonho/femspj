@@ -1,3 +1,4 @@
+
 // React 진입점: 앱 초기화
 /*
   설명:
@@ -9,12 +10,15 @@ import './index.css'
 import router from './router/root'
 import { RouterProvider } from 'react-router-dom'
 import { AuthProvider } from "./contexts/authContext"
-import { PowerChartProvider } from "./contexts/PowerChartContext" // ✅ 추가
+import { PowerChartProvider } from "./contexts/PowerChartContext"
+import { AlertProvider } from "./contexts/alertContext"  // ✅ 추가
 
 createRoot(document.getElementById('root')).render(
   <AuthProvider>
-    <PowerChartProvider> {/* ✅ PowerChartProvider로 감쌈 */}
-      <RouterProvider router={router} />
+    <PowerChartProvider>
+      <AlertProvider> {/* ✅ AlertProvider로 감싸기 */}
+        <RouterProvider router={router} />
+      </AlertProvider>
     </PowerChartProvider>
   </AuthProvider>
 );
