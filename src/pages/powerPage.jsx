@@ -8,7 +8,7 @@ function PowerPage() {
     <div className="relative">
       <ScrollHelperComponent />
 
-      <section id="weekly" className="pt-20">
+      <section id="weekly" className="pt-10">
         <WeeklyLayout />
       </section>
       <section id="monthly" className="pt-20">
