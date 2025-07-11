@@ -1,7 +1,7 @@
 function BarChartComponent() {
   return (
     <div className="text-gray-500 text-sm">
-      [실시간 전력 추세 그래프 자리입니다]
+      [각 설비별 바 전력 소모 바 차트]
     </div>
   );
 }
