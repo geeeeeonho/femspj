@@ -1,11 +1,10 @@
 import DetectionComponent from "../../components/realtime/detection";
 
-function DetectionLayout() {
+function DetectionLayoutComponent() {
   return (
-    <div className="w-full flex justify-center">
+    <div className="bg-white rounded-xl shadow p-6 w-full">
       <DetectionComponent />
     </div>
   );
 }
-
-export default DetectionLayout;
+export default DetectionLayoutComponent;

@@ -63,8 +63,34 @@ JSX를 통해 UI 구조를 직관적으로 작성 가능.
 Context API (authContext.js): 로그인 상태 관리 등 전역 상태를 위한 React 기능.
 
 -----------------------------------------
-깃으로 가져온 파일이라면
+깃으로 가져온 파일을 로컬 테스트 실행시
 
 npm install (의존성 설치)
 npm install react-router-dom (라우터 설치)
 npm run dev 실행
+
+-----------------------------------------
+배포를 위해서 이곳에서
+npm run build
+
+scp -i "C:\PROJECT\smartfactory-key.pem" -r dist ubuntu@43.202.118.48:~/
+
+EC2dp SSH 접속 필요시 접속된 컴퓨터 터미널에서 아래 명령어 실행
+scp -i "C:\PROJECT\smartfactory-key.pem" -r dist ubuntu@43.202.118.48:~/
+
+sudo rm -rf /var/www/html/*
+sudo cp -r ~/build/* /var/www/html/
+sudo systemctl restart nginx
+
+이 상태에서 웹사이트에 http://43.202.118.48를 검색하면 성공
+
+----------------------------------------
+업데이트 과정
+npm run build
+
+빌드 파일 EC2로 업로드
+scp -i "C:\PROJECT\smartfactory-key.pem" -r dist ubuntu@43.202.118.48:~/
+ssh -i "C:\PROJECT\smartfactory-key.pem" ubuntu@43.202.118.48
+sudo rm -rf /var/www/html/*
+sudo cp -r ~/dist/* /var/www/html/
+sudo systemctl restart nginx

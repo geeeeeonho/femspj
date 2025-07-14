@@ -1,30 +1,16 @@
-import DonutChart from "../../components/realtime/donutChart";
-import BarChart from "../../components/realtime/barChart";
+import DonutChartComponent from "../../components/realtime/donutChart";
+import BarChartComponent from "../../components/realtime/barChart";
 
-function DonutBarLayout() {
+function DonutBarLayoutComponent() {
   return (
-    <div
-      className="
-        grid
-        grid-cols-1
-        md:[grid-template-columns:3fr_7fr]   // md 이상에서 3:7 비율 적용
-        gap-6
-        p-4
-      "
-    >
-      {/* 🔵 좌측: 도넛 그래프 (설비별 비율) */}
-      <div className="bg-white p-4 rounded shadow">
-        <h2 className="text-lg font-semibold mb-4">설비 라인 비율</h2>
-        <DonutChart />
+    <div className="grid grid-cols-10 gap-6 w-full">
+      <div className="bg-white rounded-xl shadow p-6 col-span-10 md:col-span-3 flex flex-col">
+        <DonutChartComponent />
       </div>
-
-      {/* 🔶 우측: 막대 그래프 (실시간 추이) */}
-      <div className="bg-white p-4 rounded shadow">
-        <h2 className="text-lg font-semibold mb-4">실시간 전력 추세</h2>
-        <BarChart />
+      <div className="bg-white rounded-xl shadow p-6 col-span-10 md:col-span-7 flex flex-col">
+        <BarChartComponent />
       </div>
     </div>
   );
 }
-
-export default DonutBarLayout;
+export default DonutBarLayoutComponent;

@@ -1,15 +1,10 @@
-// 📄 파일: src/layouts/power/weeklyLayout.jsx
-// 📌 주간 전력 소비 레이아웃
-
 import WeeklyChartComponent from "../../components/power/weeklyChart";
 
-function WeeklyLayout() {
+function WeeklyLayoutComponent() {
   return (
-    <section id="weekly" className="mb-12">
-      <h2 className="text-xl font-bold mb-4">📅 주간 전력 소비</h2>
+    <div className="w-full">
       <WeeklyChartComponent />
-    </section>
+    </div>
   );
 }
-
-export default WeeklyLayout;
+export default WeeklyLayoutComponent;

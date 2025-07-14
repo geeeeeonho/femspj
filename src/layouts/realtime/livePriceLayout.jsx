@@ -1,13 +1,10 @@
 import LivePriceComponent from "../../components/realtime/livePrice";
 
-function LivePriceLayout() {
+function LivePriceLayoutComponent() {
   return (
-    <div className="bg-blue-50 rounded shadow p-6 flex flex-col items-center">
-      <h3 className="text-base font-semibold mb-2">현재 전력 예상 요금</h3>
+    <div className="bg-white rounded-xl shadow p-6 w-full flex flex-col items-center">
       <LivePriceComponent />
     </div>
   );
 }
-
-export default LivePriceLayout;
-
+export default LivePriceLayoutComponent;
