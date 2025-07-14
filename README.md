@@ -86,6 +86,7 @@ sudo systemctl restart nginx
 
 ----------------------------------------
 업데이트 과정
+이 리액트 파일 위치에서
 npm run build
 
 빌드 파일 EC2로 업로드

@@ -64,36 +64,34 @@ function MonthlyChartComponent() {
         </LineChart>
       </ResponsiveContainer>
 
-      {/* 📋 하단 표: TOP 7 */}
-      <div className="mt-6">
+      {/* 📋 하단 표: TOP 7 (반응형 폭, 제목 왼쪽, 표 글자 모두 가운데 정렬) */}
+      <div className="mt-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
         <h3 className="text-sm font-semibold mb-2">🔥 전력 소비 TOP 7</h3>
-        <table className="w-full text-sm text-left border border-gray-300">
+        <table className="w-full text-sm border border-gray-300 text-center">
           <thead className="bg-gray-100">
             <tr>
-              <th className="border px-2 py-1">순위</th>
-              <th className="border px-2 py-1">날짜</th>
-              <th className="border px-2 py-1">요일</th>
-              <th className="border px-2 py-1">소비량</th>
+              <th className="border px-2 py-1 text-center">순위</th>
+              <th className="border px-2 py-1 text-center">날짜</th>
+              <th className="border px-2 py-1 text-center">요일</th>
+              <th className="border px-2 py-1 text-center">소비량</th>
             </tr>
           </thead>
           <tbody>
-          {top7.map((item, idx) => {
-            // 행 색상 및 글꼴 굵기 조건
-            const rowStyle =
-              idx < 3
-                ? "bg-red-100 text-black font-bold"     // 🔴 1위: 빨간 배경 + 진한 글씨
-                : "bg-orange-100 text-black";            // 🧡 4~7위: 주황 배경 + 기본 글씨
-
-            return (
-              <tr key={item.date} className={`border-t border-gray-300 ${rowStyle}`}>
-                <td className="border px-2 py-1">{idx + 1}위</td>
-                <td className="border px-2 py-1">{item.date}일</td>
-                <td className="border px-2 py-1">{item.weekday}</td>
-                <td className="border px-2 py-1">{item.power} kWh</td>
-              </tr>
-            );
-          })}
-        </tbody>
+            {top7.map((item, idx) => {
+              const rowStyle =
+                idx < 3
+                  ? "bg-red-100 text-black font-bold"
+                  : "bg-orange-100 text-black";
+              return (
+                <tr key={item.date} className={`border-t border-gray-300 ${rowStyle} text-center`}>
+                  <td className="border px-2 py-1 text-center">{idx + 1}위</td>
+                  <td className="border px-2 py-1 text-center">{item.date}일</td>
+                  <td className="border px-2 py-1 text-center">{item.weekday}</td>
+                  <td className="border px-2 py-1 text-center">{item.power} kWh</td>
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </div>
     </div>

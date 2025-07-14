@@ -1,5 +1,4 @@
 // 파일: src/components/power/weeklyChart.jsx
-// 한 주간 전력 소비 차트 (월간 차트로부터 최신 7일 발추 + 색상 스타일)
 
 import {
   LineChart,
@@ -54,10 +53,10 @@ function WeeklyChartComponent() {
               const isTop1 = top1.includes(payload.date);
               const isTop3 = top3.find((t) => t.date === payload.date);
               const color = isTop1
-                ? "#ff4d4f" // 🔴
+                ? "#ff4d4f"
                 : isTop3
-                ? "#f97316" // 🪡 진한 주황
-                : "#facc15"; // 🟡 노란
+                ? "#f97316"
+                : "#facc15";
               return (
                 <circle
                   cx={cx}
@@ -73,16 +72,16 @@ function WeeklyChartComponent() {
         </LineChart>
       </ResponsiveContainer>
 
-      {/* 하단 표시: 상위 3개 표기 */}
-      <div className="mt-6">
-        <h3 className="font-semibold mb-2">전력 소비 TOP 3</h3>
+      {/* 하단 표시: 상위 3개 표기 (반응형 폭 적용 & 가운데 정렬) */}
+      <div className="mt-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
+        <h3 className="font-semibold mb-2">🔥 전력 소비 TOP 3</h3>
         <table className="w-full text-sm border border-gray-300">
           <thead>
-            <tr className="bg-gray-100 text-left">
-              <th className="border border-gray-300 px-2 py-1">순위</th>
-              <th className="border border-gray-300 px-2 py-1">날짜</th>
-              <th className="border border-gray-300 px-2 py-1">요일</th>
-              <th className="border border-gray-300 px-2 py-1">소비량 (kWh)</th>
+            <tr className="bg-gray-100 text-center">
+              <th className="border border-gray-300 px-2 py-1 text-center">순위</th>
+              <th className="border border-gray-300 px-2 py-1 text-center">날짜</th>
+              <th className="border border-gray-300 px-2 py-1 text-center">요일</th>
+              <th className="border border-gray-300 px-2 py-1 text-center">소비량 (kWh)</th>
             </tr>
           </thead>
           <tbody>
@@ -94,12 +93,12 @@ function WeeklyChartComponent() {
               return (
                 <tr
                   key={item.date}
-                  className={`border-t border-gray-300 ${rowStyle}`}
+                  className={`border-t border-gray-300 ${rowStyle} text-center`}
                 >
-                  <td className="px-2 py-1">{idx + 1}위</td>
-                  <td className="px-2 py-1">{item.date}일</td>
-                  <td className="px-2 py-1">{item.weekday}</td>
-                  <td className="px-2 py-1">{item.power} kWh</td>
+                  <td className="px-2 py-1 text-center">{idx + 1}위</td>
+                  <td className="px-2 py-1 text-center">{item.date}일</td>
+                  <td className="px-2 py-1 text-center">{item.weekday}</td>
+                  <td className="px-2 py-1 text-center">{item.power} kWh</td>
                 </tr>
               );
             })}
