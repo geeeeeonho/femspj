@@ -1,0 +1,69 @@
+import React, { useRef, useState, useEffect } from "react";
+
+function ScrollHelperComponent() {
+  const ref = useRef(null);
+  const [pos, setPos] = useState({ x: null, y: null });
+  const [drag, setDrag] = useState(false);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  // 드래그 시작
+  const onMouseDown = (e) => {
+    setDrag(true);
+    const rect = ref.current.getBoundingClientRect();
+    setOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+    document.body.style.userSelect = "none";
+  };
+
+  // 드래그 중
+  const onMouseMove = (e) => {
+    if (!drag) return;
+    setPos({
+      x: e.clientX - offset.x,
+      y: e.clientY - offset.y,
+    });
+  };
+
+  // 드래그 끝
+  const onMouseUp = () => {
+    setDrag(false);
+    document.body.style.userSelect = "";
+  };
+
+  useEffect(() => {
+    if (drag) {
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
+    } else {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    }
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+    // eslint-disable-next-line
+  }, [drag, offset]);
+
+  return (
+    <div
+      ref={ref}
+      onMouseDown={onMouseDown}
+      style={{
+        position: "fixed",
+        top: pos.y !== null ? pos.y : 112,
+        left: pos.x !== null ? pos.x : undefined,
+        right: pos.x === null ? 16 : undefined,
+        zIndex: 50,
+        cursor: drag ? "grabbing" : "grab",
+      }}
+      className="bg-white bg-opacity-90 shadow-xl rounded-lg px-3 py-4 flex flex-col items-center space-y-3 text-xs"
+    >
+      <div className="text-gray-600 font-semibold mb-1">이동 도우미</div>
+    </div>
+  );
+}
+
+export default ScrollHelperComponent;
