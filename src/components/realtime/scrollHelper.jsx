@@ -44,8 +44,12 @@ function ScrollHelperComponent() {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-    // eslint-disable-next-line
-  }, [drag, offset]);
+  });
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div
@@ -59,9 +63,27 @@ function ScrollHelperComponent() {
         zIndex: 50,
         cursor: drag ? "grabbing" : "grab",
       }}
-      className="bg-white bg-opacity-90 shadow-xl rounded-lg px-3 py-4 flex flex-col items-center space-y-3 text-xs"
+      className="bg-white bg-opacity-90 shadow-xl rounded-lg px-3 py-4 flex flex-col items-center space-y-2 text-xs"
     >
       <div className="text-gray-600 font-semibold mb-1">이동 도우미</div>
+      <button
+        onClick={() => scrollToSection("detection")}
+        className="bg-pink-500 hover:bg-pink-600 text-white px-2 py-1 rounded text-xs"
+      >
+        이상 감지
+      </button>
+      <button
+        onClick={() => scrollToSection("graph")}
+        className="bg-indigo-500 hover:bg-indigo-600 text-white px-2 py-1 rounded text-xs"
+      >
+        그래프
+      </button>
+      <button
+        onClick={() => scrollToSection("price")}
+        className="bg-yellow-500 hover:bg-yellow-600 text-black px-2 py-1 rounded text-xs"
+      >
+        요금 알림
+      </button>
     </div>
   );
 }
