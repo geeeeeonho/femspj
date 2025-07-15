@@ -11,6 +11,20 @@ import {
 } from "recharts";
 import { usePowerChart } from "../../contexts/PowerChartContext";
 
+// MM/DD 변환 함수, /는 2pt 작게
+function MMDDwithSmallSlash(dateStr) {
+  if (!dateStr || dateStr.length < 10) return dateStr;
+  const mm = dateStr.slice(5, 7);
+  const dd = dateStr.slice(8, 10);
+  return (
+    <>
+      {mm}
+      <tspan style={{ fontSize: "12px" }}>/</tspan>
+      {dd}
+    </>
+  );
+}
+
 function WeeklyChartComponent() {
   const { monthlyData } = usePowerChart();
 
@@ -22,26 +36,51 @@ function WeeklyChartComponent() {
   const top1 = sorted.slice(0, 1).map((d) => d.date);
   const top3 = sorted.slice(0, 3);
 
+  // X축 라벨: 첫날 오프셋 없음, 마지막만 -10px로!
+  const renderTick = ({ x, y, index }) => {
+    const total = weekData.length;
+    let offsetX = 0;
+    if (index === total - 1) offsetX = -10; // 마지막만 살짝만 왼쪽으로
+    const d = weekData[index];
+    return (
+      <g transform={`translate(${x + offsetX},${y + 12})`}>
+        <text
+          x={0}
+          y={0}
+          textAnchor="middle"
+          dominantBaseline="central"
+          className="fill-gray-700 text-sm"
+        >
+          {MMDDwithSmallSlash(d?.date)}
+        </text>
+      </g>
+    );
+  };
+
   return (
     <div className="bg-white p-4 rounded shadow">
       <h2 className="font-bold mb-2">📆 주간 전력 소비 추이</h2>
-
       <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={weekData}>
+        <LineChart
+          data={weekData}
+          margin={{ top: 10, right: 25, left: 18, bottom: 0 }} // 오른쪽 약간만 확보
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="date"
-            tickFormatter={(v) => {
-              const item = weekData.find((d) => d.date === v);
-              return item ? `${item.weekday}(${v})` : `${v}일`;
-            }}
+            interval={0}
+            tick={renderTick}
+            tickLine={false}
+            axisLine={{ stroke: "#aaa" }}
           />
           <YAxis />
           <Tooltip
             formatter={(value) => [`${value} kWh`, "소비량"]}
             labelFormatter={(label) => {
               const item = weekData.find((d) => d.date === label);
-              return `${label}일 (${item?.weekday})`;
+              const mm = label?.slice(5, 7);
+              const dd = label?.slice(8, 10);
+              return `${item?.weekday ?? ""} (${mm}/${dd})`;
             }}
           />
           <Line
@@ -71,8 +110,7 @@ function WeeklyChartComponent() {
           />
         </LineChart>
       </ResponsiveContainer>
-
-      {/* 하단 표시: 상위 3개 표기 (반응형 폭 적용 & 가운데 정렬) */}
+      {/* 하단 표 부분 동일 */}
       <div className="mt-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
         <h3 className="font-semibold mb-2">🔥 전력 소비 TOP 3</h3>
         <table className="w-full text-sm border border-gray-300">
@@ -96,7 +134,11 @@ function WeeklyChartComponent() {
                   className={`border-t border-gray-300 ${rowStyle} text-center`}
                 >
                   <td className="px-2 py-1 text-center">{idx + 1}위</td>
-                  <td className="px-2 py-1 text-center">{item.date}일</td>
+                  <td className="px-2 py-1 text-center">
+                    {item.date.slice(5, 7)}
+                    <span style={{ fontSize: "12px" }}>/</span>
+                    {item.date.slice(8, 10)}
+                  </td>
                   <td className="px-2 py-1 text-center">{item.weekday}</td>
                   <td className="px-2 py-1 text-center">{item.power} kWh</td>
                 </tr>
