@@ -3,7 +3,7 @@ import CustomChartDownComponent from "../../components/power/customChartDown";
 import { useState } from "react";
 import { usePowerChart } from "../../contexts/PowerChartContext";
 
-function CustomLayout() {
+function CustomLayoutComponent() {
   const { monthlyData } = usePowerChart();
   const [selectedRange, setSelectedRange] = useState({
     startIndex: 0,
@@ -28,4 +28,4 @@ function CustomLayout() {
   );
 }
 
-export default CustomLayout;
+export default CustomLayoutComponent;
