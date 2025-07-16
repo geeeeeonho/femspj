@@ -1,5 +1,3 @@
-// 파일: src/components/power/weeklyChart.jsx
-
 import {
   LineChart,
   Line,
@@ -36,11 +34,11 @@ function WeeklyChartComponent() {
   const top1 = sorted.slice(0, 1).map((d) => d.date);
   const top3 = sorted.slice(0, 3);
 
-  // X축 라벨: 첫날 오프셋 없음, 마지막만 -10px로!
+  // X축 라벨 렌더링
   const renderTick = ({ x, y, index }) => {
     const total = weekData.length;
     let offsetX = 0;
-    if (index === total - 1) offsetX = -10; // 마지막만 살짝만 왼쪽으로
+    if (index === total - 1) offsetX = -10;
     const d = weekData[index];
     return (
       <g transform={`translate(${x + offsetX},${y + 12})`}>
@@ -63,7 +61,7 @@ function WeeklyChartComponent() {
       <ResponsiveContainer width="100%" height={250}>
         <LineChart
           data={weekData}
-          margin={{ top: 10, right: 25, left: 18, bottom: 0 }} // 오른쪽 약간만 확보
+          margin={{ top: 10, right: 25, left: 18, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
@@ -110,7 +108,8 @@ function WeeklyChartComponent() {
           />
         </LineChart>
       </ResponsiveContainer>
-      {/* 하단 표 부분 동일 */}
+
+      {/* 📊 하단 표 */}
       <div className="mt-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
         <h3 className="font-semibold mb-2">🔥 전력 소비 TOP 3</h3>
         <table className="w-full text-sm border border-gray-300">
@@ -120,6 +119,7 @@ function WeeklyChartComponent() {
               <th className="border border-gray-300 px-2 py-1 text-center">날짜</th>
               <th className="border border-gray-300 px-2 py-1 text-center">요일</th>
               <th className="border border-gray-300 px-2 py-1 text-center">소비량 (kWh)</th>
+              <th className="border border-gray-300 px-2 py-1 text-center">요금</th> {/* ✅ 추가 */}
             </tr>
           </thead>
           <tbody>
@@ -141,6 +141,7 @@ function WeeklyChartComponent() {
                   </td>
                   <td className="px-2 py-1 text-center">{item.weekday}</td>
                   <td className="px-2 py-1 text-center">{item.power} kWh</td>
+                  <td className="px-2 py-1 text-center">{item.price.toLocaleString()} 원</td> {/* ✅ 추가 */}
                 </tr>
               );
             })}

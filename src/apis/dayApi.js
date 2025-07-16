@@ -16,11 +16,16 @@ export function generateSampleMonthlyData() {
 
   while (date <= end) {
     const isoDate = date.toISOString().slice(0, 10); // "YYYY-MM-DD"
+    const power = Math.floor(180 + Math.random() * 150); // kWh
+    const price = parseFloat((power * (100 + Math.random() * 20)).toFixed(2)); // ✅ 단가 100~120원 가정
+
     data.push({
       date: isoDate,
-      power: Math.floor(180 + Math.random() * 150),
+      power,
+      price, // ✅ 샘플 전기요금 포함
       weekday: getKoreanWeekday(isoDate),
     });
+
     date.setDate(date.getDate() + 1);
   }
   return data;
@@ -37,10 +42,11 @@ export const fetchMonthlyData = async () => {
 export const fetchMonthlyData = async () => {
   const res = await fetch('/api/power-data/monthly');
   const data = await res.json();
-  // weekday가 없으면 자동 추가
+  // weekday, price가 없으면 자동 추가
   return data.map(item => ({
     ...item,
     weekday: item.weekday || getKoreanWeekday(item.date),
+    price: item.price || Math.round(item.power * 110), // ✅ 단가 110원 기본 가정
   }));
 };
 */
@@ -54,7 +60,7 @@ export const fetchMonthlyData = async () => {
   return data.map(item => ({
     ...item,
     weekday: item.weekday || getKoreanWeekday(item.date),
+    price: item.price || Math.round(item.power * 110), // ✅ 누락 시 계산
   }));
 };
 */
-

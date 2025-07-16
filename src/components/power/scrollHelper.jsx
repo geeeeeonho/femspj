@@ -6,7 +6,6 @@ function ScrollHelperComponent() {
   const [drag, setDrag] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  // 드래그 시작
   const onMouseDown = (e) => {
     setDrag(true);
     const rect = ref.current.getBoundingClientRect();
@@ -17,7 +16,6 @@ function ScrollHelperComponent() {
     document.body.style.userSelect = "none";
   };
 
-  // 드래그 중
   const onMouseMove = (e) => {
     if (!drag) return;
     setPos({
@@ -26,7 +24,6 @@ function ScrollHelperComponent() {
     });
   };
 
-  // 드래그 끝
   const onMouseUp = () => {
     setDrag(false);
     document.body.style.userSelect = "";
@@ -86,13 +83,6 @@ function ScrollHelperComponent() {
         className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-sm"
       >
         선택
-      </button>
-
-      <button
-        onClick={() => scrollToSection("analyze")}
-        className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-sm"
-      >
-        분석
       </button>
     </div>
   );

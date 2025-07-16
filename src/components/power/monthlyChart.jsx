@@ -1,5 +1,3 @@
-// 파일: src/components/power/monthlyChart.jsx
-
 import {
   LineChart,
   Line,
@@ -45,7 +43,7 @@ function MonthlyChartComponent() {
       <ResponsiveContainer width="100%" height={300}>
         <LineChart
           data={monthData}
-          margin={{ top: 10, right: 36, left: 18, bottom: 0 }} // ✅ 오른쪽 여백 넉넉!
+          margin={{ top: 10, right: 36, left: 18, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
@@ -107,6 +105,7 @@ function MonthlyChartComponent() {
           />
         </LineChart>
       </ResponsiveContainer>
+
       <div className="mt-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-auto">
         <h3 className="text-sm font-semibold mb-2">🔥 전력 소비 TOP 7</h3>
         <table className="w-full text-sm border border-gray-300 text-center">
@@ -116,6 +115,7 @@ function MonthlyChartComponent() {
               <th className="border px-2 py-1 text-center">날짜</th>
               <th className="border px-2 py-1 text-center">요일</th>
               <th className="border px-2 py-1 text-center">소비량</th>
+              <th className="border px-2 py-1 text-center">요금</th> {/* ✅ 추가된 열 */}
             </tr>
           </thead>
           <tbody>
@@ -125,13 +125,17 @@ function MonthlyChartComponent() {
                   ? "bg-red-100 text-black font-bold"
                   : "bg-orange-100 text-black";
               return (
-                <tr key={item.date} className={`border-t border-gray-300 ${rowStyle} text-center`}>
+                <tr
+                  key={item.date}
+                  className={`border-t border-gray-300 ${rowStyle} text-center`}
+                >
                   <td className="border px-2 py-1 text-center">{idx + 1}위</td>
                   <td className="border px-2 py-1 text-center">
                     {MMDDwithSmallSlash(item.date)}
                   </td>
                   <td className="border px-2 py-1 text-center">{item.weekday}</td>
                   <td className="border px-2 py-1 text-center">{item.power} kWh</td>
+                  <td className="border px-2 py-1 text-center">{item.price.toLocaleString()} 원</td> {/* ✅ 추가된 셀 */}
                 </tr>
               );
             })}

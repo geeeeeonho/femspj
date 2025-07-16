@@ -1,9 +1,14 @@
-// 📄 파일: src/pages/solutionPage.jsx
+import AnalyzeLayoutComponent from "../layouts/solution/analyzeLayout";
+
 function SolutionPage() {
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold">🔧 솔루션 페이지</h1>
-      <p className="mt-2 text-gray-700">이곳은 솔루션 관련 정보가 표시될 영역입니다.</p>
+    <div className="min-h-screen bg-gray-50 px-0">
+      <section id="summary" className="pt-10">
+        <h2 className="text-lg font-bold mb-4 px-4 flex items-center gap-2">
+          🔎 분석 요약
+        </h2>
+        <AnalyzeLayoutComponent />
+      </section>
     </div>
   );
 }

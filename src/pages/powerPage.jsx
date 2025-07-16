@@ -1,7 +1,7 @@
 import WeeklyLayoutComponent from "../layouts/power/weeklyLayout";
 import MonthlyLayoutComponent from "../layouts/power/monthlyLayout";
 import CustomLayoutComponent from "../layouts/power/customLayout";
-import AnalyzeLayoutComponent from "../layouts/power/analyzeLayout";
+import AnalyzeLayoutComponent from "../layouts/solution/analyzeLayout";
 import ScrollHelperComponent from "../components/power/scrollHelper";
 
 function PowerPage() {
@@ -22,11 +22,6 @@ function PowerPage() {
       <section id="custom" className="pt-20">
         <h2 className="text-lg font-bold mb-4 px-4">🧩 선택 구간 분석</h2>
         <CustomLayoutComponent />
-      </section>
-
-      <section id="analyze" className="pt-20">
-        <h2 className="text-lg font-bold mb-4 px-4">🔎 전력 소비 분석</h2>
-        <AnalyzeLayoutComponent />
       </section>
     </div>
   );
