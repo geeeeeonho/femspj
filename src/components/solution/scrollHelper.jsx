@@ -44,7 +44,7 @@ function ScrollHelperComponent() {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  });
+  }, [drag, offset]);
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
@@ -66,23 +66,26 @@ function ScrollHelperComponent() {
       className="bg-white bg-opacity-90 shadow-xl rounded-lg px-3 py-4 flex flex-col items-center space-y-2 text-xs"
     >
       <div className="text-gray-600 font-semibold mb-1">이동 도우미</div>
+
       <button
-        onClick={() => scrollToSection("detection")}
-        className="bg-pink-500 hover:bg-pink-600 text-white px-2 py-1 rounded text-xs"
+        onClick={() => scrollToSection("summary")}
+        className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs"
       >
-        이상 감지
+        분석 요약
       </button>
+
       <button
-        onClick={() => scrollToSection("graph")}
-        className="bg-indigo-500 hover:bg-indigo-600 text-white px-2 py-1 rounded text-xs"
+        onClick={() => scrollToSection("line-order")}
+        className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs"
       >
-        그래프
+        설비 순서
       </button>
+
       <button
-        onClick={() => scrollToSection("price")}
-        className="bg-yellow-500 hover:bg-yellow-600 text-black px-2 py-1 rounded text-xs"
+        onClick={() => scrollToSection("simulator")}
+        className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 rounded text-xs"
       >
-        요금 알림
+        작업 시뮬
       </button>
     </div>
   );
