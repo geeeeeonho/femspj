@@ -41,7 +41,7 @@ function MonthlyChartComponent() {
 
   return (
     <div className="bg-white p-4 pl-2 rounded shadow">
-      <h2 className="font-bold mb-2">🟦 최근 월간 전력 소비 추이</h2>
+      <h2 className="font-bold mb-2"> 🟦 이번달 전력 소비 추이</h2>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart
           data={monthData}

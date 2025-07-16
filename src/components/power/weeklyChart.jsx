@@ -59,7 +59,7 @@ function WeeklyChartComponent() {
 
   return (
     <div className="bg-white p-4 rounded shadow">
-      <h2 className="font-bold mb-2">📆 주간 전력 소비 추이</h2>
+      <h2 className="font-bold mb-2">📆 최근 7일 전력 소비 추이</h2>
       <ResponsiveContainer width="100%" height={250}>
         <LineChart
           data={weekData}

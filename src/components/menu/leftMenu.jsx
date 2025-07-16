@@ -42,7 +42,7 @@ function LeftMenuComponent() {
         }
       >
         <img src="/icons/solution.png" alt="솔루션" className={iconStyle} />
-        <span>솔루션</span>
+        <span>종합 분석</span>
       </NavLink>
     </div>
   );
