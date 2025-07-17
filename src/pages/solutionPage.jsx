@@ -1,4 +1,4 @@
-import ScrollHelperComponent from "../components/realtime/scrollHelper";
+import ScrollHelperComponent from "../components/solution/scrollHelper";
 import AnalyzeLayoutComponent from "../layouts/solution/analyzeLayout";
 import LineOrderLayout from "../layouts/solution/lineOrderLayout";
 import WorkSimulatorLayout from "../layouts/solution/workSimulatorLayout";
