@@ -3,17 +3,8 @@
 
 import LineOrderStep3 from "./lineOrderStep3";
 
-function LineOrderStep2({ lineData, lineIndex, setLineOrder, allLineOrder }) {
+function LineOrderStep2({ lineData, lineIndex, setLineOrder, allLineOrder, onDeleteLine }) {
   const { lineId, equipment } = lineData;
-
-  if (!Array.isArray(equipment) || equipment.length === 0) {
-    return (
-      <div className="bg-white p-4 rounded shadow">
-        <h3 className="font-semibold mb-2">🏗 {lineId}</h3>
-        <p className="text-red-500">⚠️ 설비 데이터가 존재하지 않습니다.</p>
-      </div>
-    );
-  }
 
   const moveEquip = (fromIdx, toIdx) => {
     if (toIdx < 0 || toIdx >= equipment.length) return;
@@ -26,15 +17,45 @@ function LineOrderStep2({ lineData, lineIndex, setLineOrder, allLineOrder }) {
     setLineOrder(newLines);
   };
 
+  const addEquipment = () => {
+    const newEq = `설비${String.fromCharCode(65 + equipment.length)}`;
+    const newEquip = [...equipment, newEq];
+    const newLines = [...allLineOrder];
+    newLines[lineIndex] = { ...newLines[lineIndex], equipment: newEquip };
+    setLineOrder(newLines);
+  };
+
+  const deleteEquipment = (idx) => {
+    const newEquip = equipment.filter((_, i) => i !== idx);
+    const newLines = [...allLineOrder];
+    newLines[lineIndex] = { ...newLines[lineIndex], equipment: newEquip };
+    setLineOrder(newLines);
+  };
+
   return (
     <div className="bg-white p-4 rounded shadow">
-      <h3 className="font-semibold mb-2">
-        🏗 {lineId} (설비 순서 조정)
-      </h3>
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="font-semibold">
+          🏗 {lineId} (설비 순서 조정)
+        </h3>
+        <button
+          onClick={onDeleteLine}
+          className="text-red-500 text-sm hover:underline"
+        >
+          라인 삭제
+        </button>
+      </div>
       <LineOrderStep3
         equipment={equipment}
         onMove={moveEquip}
+        onDelete={deleteEquipment}
       />
+      <button
+        onClick={addEquipment}
+        className="mt-2 text-blue-600 text-sm hover:underline"
+      >
+        + 설비 추가
+      </button>
     </div>
   );
 }
