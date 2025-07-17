@@ -1,6 +1,6 @@
 // 📁 src/layouts/solution/lineOrderLayout.jsx
 
-import LineOrderComponent from "../../components/solution/lineOrder";
+import LineOrderContainer from "../../components/solution/lineOrder/lineOrderContainer";
 
 /*
   레이아웃: 제품별 설비 순서 입력
@@ -10,7 +10,7 @@ import LineOrderComponent from "../../components/solution/lineOrder";
 function LineOrderLayout() {
   return (
     <div className="bg-white shadow p-4 rounded">
-      <LineOrderComponent />
+      <LineOrderContainer />
     </div>
   );
 }
