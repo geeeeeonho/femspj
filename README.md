@@ -67,6 +67,7 @@ Context API (authContext.js): 로그인 상태 관리 등 전역 상태를 위�
 
 npm install (의존성 설치)
 npm install react-router-dom (라우터 설치)
+npm install react-datepicker (추가 설치)
 npm run dev 실행
 
 -----------------------------------------
