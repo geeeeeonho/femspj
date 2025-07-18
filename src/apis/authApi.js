@@ -1,66 +1,86 @@
+
+// 📁 src/apis/authApi.js
+// ✅ 로그인/회원가입 관련 API 함수들 (샘플 vs 실제 API 구분)
+
 import axios from "axios";
 
-// [기본 설정] API baseURL
-const BASE_URL = "http://api주소.com"; // 실제 서버 주소로 바꿔줘!
+const BASE_URL = "http://api주소.com"; // 🔁 실제 서버 주소로 변경 필요
+const isSampleMode = true; // ✅ true = 샘플 응답 사용, false = 실서버 연결
 
-// ✔️ 로그인
-export async function loginApi(email, password) {
-  const response = await axios.post(`${BASE_URL}/auth/login`, {
-    email,
-    password,
-  });
-  return response.data; // { token: "...", ... }
+/* -----------------------------
+ * ✅ 샘플 응답 함수들 (개발용)
+ * ----------------------------- */
+async function loginSample(email, password) {
+  if (email === "123@mail.com" && password === "123") {
+    return {
+      token: "sample-jwt-token",
+      user: {
+        name: "홍길동",
+        email: "123@mail.com",
+        company: "테스트 회사",
+        phone: "010-1234-5678",
+      },
+    };
+  } else {
+    throw new Error("이메일 또는 비밀번호가 올바르지 않습니다.");
+  }
 }
 
-// ✔️ 회원가입
-export async function registerApi({ company, name, phone, email, password }) {
-  const response = await axios.post(`${BASE_URL}/auth/register`, {
-    company,
-    name,
-    phone,
-    email,
-    password,
-  });
-  return response.data;
+async function registerSample({ company, name, phone, email, password }) {
+  console.log("📦 샘플 회원가입 요청:", { company, name, phone, email });
+  return { success: true, message: "회원가입 완료" };
 }
 
-// ✔️ 회원정보(프로필) 변경
-export async function updateProfileApi({ company, name, phone, email }) {
-  const response = await axios.put(`${BASE_URL}/auth/update-profile`, {
-    company,
-    name,
-    phone,
-    email,
-  });
-  return response.data;
+async function fetchMyProfileSample(token) {
+  return {
+    name: "홍길동",
+    email: "123@mail.com",
+    company: "테스트 회사",
+    phone: "010-1234-5678",
+  };
 }
 
-// ✔️ 비밀번호 변경
-export async function changePasswordApi({ email, oldPassword, newPassword }) {
-  const response = await axios.put(`${BASE_URL}/auth/change-password`, {
-    email,
-    oldPassword,
-    newPassword,
-  });
-  return response.data;
+async function logoutSample(token) {
+  console.log("📦 샘플 로그아웃 완료");
+  return { success: true };
 }
 
-// ✔️ 로그아웃 (JWT 방식은 주로 프론트만, 세션/블랙리스트라면 API 필요)
-export async function logoutApi(token) {
-  // 토큰 필요시 헤더에 포함
-  return await axios.post(`${BASE_URL}/auth/logout`, {}, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
-  });
-}
+/* -----------------------------
+ * ✅ 실서버 API 함수들 (운영용)
+ * ✅ 아래는 주석처리된 상태로 유지
+ * ----------------------------- */
 
-// (선택) 내 정보 조회 등 필요에 따라 추가 가능
-export async function fetchMyProfileApi(token) {
-  const response = await axios.get(`${BASE_URL}/auth/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
-  });
-  return response.data;
-}
+// async function loginReal(email, password) {
+//   const res = await axios.post(`${BASE_URL}/auth/login`, { email, password });
+//   return res.data;
+// }
+
+// async function registerReal({ company, name, phone, email, password }) {
+//   const res = await axios.post(`${BASE_URL}/auth/register`, {
+//     company, name, phone, email, password,
+//   });
+//   return res.data;
+// }
+
+// async function fetchMyProfileReal(token) {
+//   const res = await axios.get(`${BASE_URL}/auth/me`, {
+//     headers: { Authorization: `Bearer ${token}` },
+//   });
+//   return res.data;
+// }
+
+// async function logoutReal(token) {
+//   return await axios.post(`${BASE_URL}/auth/logout`, {}, {
+//     headers: { Authorization: `Bearer ${token}` },
+//   });
+// }
+
+/* -----------------------------
+ * ✅ export 분기 (샘플/실서버)
+ * ----------------------------- */
+export const loginApi = isSampleMode ? loginSample : null; // loginReal
+export const registerApi = isSampleMode ? registerSample : null; // registerReal
+export const fetchMyProfileApi = isSampleMode ? fetchMyProfileSample : null; // fetchMyProfileReal
+export const logoutApi = isSampleMode ? logoutSample : null; // logoutReal
+
+// 💡 실서버 전환 시 위의 null을 함수로 교체 + isSampleMode를 false로 변경

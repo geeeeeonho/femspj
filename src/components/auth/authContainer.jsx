@@ -1,36 +1,45 @@
-// React 컨테이너 컴포넌트: 로그인/회원가입 전환 기능 포함
+// 📁 src/components/auth/authContainer.jsx
 /*
   설명:
-  - 기본은 로그인 창을 보여줍니다.
-  - "회원가입" 버튼을 누르면 회원가입 폼으로 전환됩니다.
-  - 다시 "로그인" 버튼을 누르면 로그인 창으로 돌아옵니다.
-  - 로그인 시 / 로 이동
+  - 로그인/회원가입 화면을 전환하며 보여주는 컨테이너입니다.
+  - 로그인 성공 시 '/'로 이동합니다.
 */
 
 import { useState } from "react";
-import { useAuth } from "../../contexts/authContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
 import LoginInputComponent from "./loginInput";
 import SignupInputComponent from "./signupInput";
 
 function AuthContainer() {
   const [isSignup, setIsSignup] = useState(false);
-  const { login } = useAuth();
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login, register } = useAuth();
 
-  // 로그인 처리 콜백
-  const handleLogin = (email, password) => {
-    console.log("로그인 요청:", email, password);
-    login();        // 로그인 처리
-    navigate("/");  // 메인으로 이동
+  // ✅ 로그인 처리
+  const handleLogin = async (email, password) => {
+    setError("");
+    try {
+      await login(email, password);
+      navigate("/"); // 메인 페이지로 이동
+    } catch (err) {
+      console.error("로그인 실패:", err);
+      setError("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
+    }
   };
 
-  // 회원가입 처리 콜백
-  const handleSignup = (formData) => {
-    console.log("회원가입 요청:", formData);
-    // 여기에 서버 요청 추가 가능
-    alert("회원가입 완료! 로그인 해주세요.");
-    setIsSignup(false);  // 다시 로그인 화면으로 전환
+  // ✅ 회원가입 처리
+  const handleSignup = async (formData) => {
+    setError("");
+    try {
+      await register(formData); // {company, name, phone, email, password}
+      alert("회원가입이 완료되었습니다. 로그인 해주세요.");
+      setIsSignup(false); // 로그인 폼으로 전환
+    } catch (err) {
+      console.error("회원가입 실패:", err);
+      setError("회원가입에 실패했습니다. 입력한 정보를 다시 확인해주세요.");
+    }
   };
 
   return (
@@ -43,6 +52,7 @@ function AuthContainer() {
       {isSignup ? (
         <>
           <SignupInputComponent onSignup={handleSignup} />
+          {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
           <button
             className="mt-4 text-blue-600 underline text-sm"
             onClick={() => setIsSignup(false)}
@@ -53,6 +63,7 @@ function AuthContainer() {
       ) : (
         <>
           <LoginInputComponent onLogin={handleLogin} />
+          {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
           <button
             className="mt-4 text-blue-600 underline text-sm"
             onClick={() => setIsSignup(true)}

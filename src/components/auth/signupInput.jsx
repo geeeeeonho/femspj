@@ -1,6 +1,5 @@
-// 회원가입 입력 컴포넌트
-// 파일: signupInput.jsx
-// 위치: src/components/auth/signupInput.jsx
+// 📁 src/components/auth/signupInput.jsx
+// 설명: 회원가입 입력 필드를 제공하는 컴포넌트
 
 import { useState } from "react";
 
@@ -68,7 +67,10 @@ function SignupInputComponent({ onSignup }) {
           required
         />
       </div>
-      <button type="submit" className="w-full bg-green-600 text-white py-2 rounded font-bold hover:bg-green-700">
+      <button
+        type="submit"
+        className="w-full bg-green-600 text-white py-2 rounded font-bold hover:bg-green-700"
+      >
         회원가입
       </button>
     </form>

@@ -1,6 +1,5 @@
+// 📁 src/components/auth/loginInput.jsx
 // 로그인 입력 컴포넌트
-// 파일: loginInput.jsx
-// 위치: src/components/auth/loginInput.jsx
 
 import { useState } from "react";
 
@@ -35,7 +34,10 @@ function LoginInputComponent({ onLogin }) {
           required
         />
       </div>
-      <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700">
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700"
+      >
         로그인
       </button>
     </form>
