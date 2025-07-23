@@ -1,6 +1,6 @@
 import React from "react";
 
-function PowerScrollHelperComponent() {
+function RealtimeScrollHelperComponent() {
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -9,25 +9,25 @@ function PowerScrollHelperComponent() {
   return (
     <div className="w-full flex flex-col items-center px-2 divide-y divide-gray-600 text-white text-sm">
       <button
-        onClick={() => scrollToSection("weekly")}
+        onClick={() => scrollToSection("detection")}
         className="w-full px-3 py-2 text-left hover:bg-[rgba(255,255,255,0.1)] transition"
       >
-        주간
+        이상 감지
       </button>
       <button
-        onClick={() => scrollToSection("monthly")}
+        onClick={() => scrollToSection("graph")}
         className="w-full px-3 py-2 text-left hover:bg-[rgba(255,255,255,0.1)] transition"
       >
-        월간
+        그래프
       </button>
       <button
-        onClick={() => scrollToSection("custom")}
+        onClick={() => scrollToSection("price")}
         className="w-full px-3 py-2 text-left hover:bg-[rgba(255,255,255,0.1)] transition"
       >
-        선택
+        요금 알림
       </button>
     </div>
   );
 }
 
-export default PowerScrollHelperComponent;
+export default RealtimeScrollHelperComponent;

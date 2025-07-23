@@ -1,13 +1,11 @@
 import DetectionLayoutComponent from "../layouts/realtime/detectionLayout";
 import DonutBarLayoutComponent from "../layouts/realtime/donutBarLayout";
 import LivePriceLayoutComponent from "../layouts/realtime/livePriceLayout";
-import ScrollHelperComponent from "../components/realtime/scrollHelper";  // 👈 추가!
+
 
 function RealtimePage() {
   return (
     <div className="min-h-screen bg-gray-50 px-0">
-      <ScrollHelperComponent /> {/* 👈 여기 추가! */}
-
       <section id="detection" className="pt-10">
         <h2 className="text-lg font-bold mb-4 px-4 flex items-center gap-2">
           🛑 이상 설비 감지

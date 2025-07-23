@@ -1,4 +1,4 @@
-import ScrollHelperComponent from "../components/solution/scrollHelper";
+import ScrollHelperComponent from "../components/solution/solutionScrollHelper";
 import AnalyzeLayoutComponent from "../layouts/solution/analyzeLayout";
 import LineOrderLayout from "../layouts/solution/lineOrderLayout";
 import WorkSimulatorLayout from "../layouts/solution/workSimulatorLayout";
@@ -6,7 +6,6 @@ import WorkSimulatorLayout from "../layouts/solution/workSimulatorLayout";
 function SolutionPage() {
   return (
     <div className="min-h-screen bg-gray-50 px-0">
-      <ScrollHelperComponent /> {/* 스크롤 도우미 추가 */}
 
       <section id="summary" className="pt-10">
         <h2 className="text-lg font-bold mb-4 px-4 flex items-center gap-2">
