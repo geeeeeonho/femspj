@@ -1,9 +1,19 @@
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function PowerScrollHelperComponent() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (location.pathname !== "/power") {
+      // 다른 페이지면 → /power로 이동하면서 scrollTo 상태 전달
+      navigate("/power", { state: { scrollTo: id } });
+    } else {
+      // 현재 power 페이지면 → 바로 스크롤
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (

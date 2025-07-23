@@ -1,11 +1,32 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import ScrollHelperComponent from "../components/solution/solutionScrollHelper";
 import AnalyzeLayoutComponent from "../layouts/solution/analyzeLayout";
 import LineOrderLayout from "../layouts/solution/lineOrderLayout";
 import WorkSimulatorLayout from "../layouts/solution/workSimulatorLayout";
 
 function SolutionPage() {
+  const location = useLocation();
+
+  useEffect(() => {
+    // 페이지 진입 후 스크롤
+    const scrollTo = location.state?.scrollTo;
+    if (scrollTo) {
+      const el = document.getElementById(scrollTo);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 100); // 렌더링 완료 후 살짝 지연
+      }
+    }
+  }, [location.state]);
+
   return (
     <div className="min-h-screen bg-gray-50 px-0">
+      {/* 이동 도우미 */}
+      <div className="fixed top-[112px] right-4 z-40">
+        <ScrollHelperComponent />
+      </div>
 
       <section id="summary" className="pt-10">
         <h2 className="text-lg font-bold mb-4 px-4 flex items-center gap-2">

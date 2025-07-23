@@ -1,9 +1,19 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function RealtimeScrollHelperComponent() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (location.pathname !== "/realtime") {
+      // 다른 페이지 → /realtime로 이동하면서 scrollTo 상태 전달
+      navigate("/realtime", { state: { scrollTo: id } });
+    } else {
+      // 같은 페이지면 → 바로 스크롤
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (

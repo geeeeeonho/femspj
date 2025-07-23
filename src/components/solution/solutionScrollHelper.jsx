@@ -1,9 +1,19 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function SolutionScrollHelperComponent() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (location.pathname !== "/solution") {
+      // 페이지 이동 + state로 scrollTo 전달
+      navigate("/solution", { state: { scrollTo: id } });
+    } else {
+      // 현재 페이지일 경우 바로 이동
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
