@@ -71,16 +71,19 @@ npm install react-datepicker (추가 설치)
 npm run dev 실행
 
 -----------------------------------------
-배포를 위해서 이곳에서
+배포를 위해서
+이 파일 위치에서
 npm run build
 
-scp -i "C:\PROJECT\smartfactory-key.pem" -r dist ubuntu@43.202.118.48:~/
+파워셀로 이 파일 위치에서
+icacls "C:\PROJECT\smartfactory-key.pem" /inheritance:r
+icacls "C:\PROJECT\smartfactory-key.pem" /grant:r "${env:USERNAME}:R"
 
-EC2dp SSH 접속 필요시 접속된 컴퓨터 터미널에서 아래 명령어 실행
-scp -i "C:\PROJECT\smartfactory-key.pem" -r dist ubuntu@43.202.118.48:~/
+EC2 안에서 배포 반영 명령 실행(그냥 내PC에서)
+ssh -i "C:\PROJECT\smartfactory-key.pem" ubuntu@43.202.118.48
 
 sudo rm -rf /var/www/html/*
-sudo cp -r ~/build/* /var/www/html/
+sudo cp -r ~/dist/* /var/www/html/
 sudo systemctl restart nginx
 
 이 상태에서 웹사이트에 http://43.202.118.48를 검색하면 성공

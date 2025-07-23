@@ -1,18 +1,27 @@
 // 📁 src/components/auth/signupInput.jsx
-// 설명: 회원가입 입력 필드를 제공하는 컴포넌트
+// 설명: registerApi를 직접 호출하여 회원가입 요청을 처리하는 버전
 
 import { useState } from "react";
+import { registerApi } from "../../apis/authApi";
 
-function SignupInputComponent({ onSignup }) {
+function SignupInputComponent() {
   const [company, setCompany] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSignup({ company, name, phone, email, password });
+
+    try {
+      const result = await registerApi({ company, name, phone, email, password });
+      console.log("✅ 회원가입 성공:", result);
+      alert("회원가입 성공!");
+    } catch (error) {
+      console.error("❌ 회원가입 실패:", error.response?.data || error);
+      alert("회원가입 실패: " + (error.response?.data?.message || "서버 오류"));
+    }
   };
 
   return (
