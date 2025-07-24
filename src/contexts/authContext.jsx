@@ -60,8 +60,23 @@ export function AuthProvider({ children }) {
   };
 
   // 회원가입
-  const register = async (info) => {
-    return await registerApi(info);
+  const register = async ({
+    company,
+    name,
+    phone,
+    email,
+    password,
+    authAlarm = false, // ✅ 기본값: false
+  }) => {
+    const registerInfo = {
+      company,
+      name,
+      phone,
+      email,
+      password,
+      authAlarm, // ✅ 알람 수신 여부 포함
+    };
+    return await registerApi(registerInfo);
   };
 
   // 내 정보 수동 재조회
@@ -78,7 +93,7 @@ export function AuthProvider({ children }) {
         token,
         user,
         loading,
-        isLoggedIn, // ✅ 여기 추가
+        isLoggedIn,
         login,
         logout,
         register,

@@ -18,14 +18,15 @@ async function loginReal(email, password) {
   return res.data;
 }
 
-// 회원가입
-async function registerReal({ company, name, phone, email, password }) {
+// ✅ 회원가입 (알람 수신 여부 포함)
+async function registerReal({ company, name, phone, email, password, authAlarm }) {
   const res = await axios.post(`${BASE_URL}/auth/register`, {
     company,
     name,
     phone,
     email,
     password,
+    authAlarm, // ← 알람 수신 여부 (true / false)
   });
   return res.data;
 }

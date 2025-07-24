@@ -10,12 +10,20 @@ function SignupInputComponent() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [authAlarm, setAuthAlarm] = useState(false); // ✅ 알람 수신 여부
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const result = await registerApi({ company, name, phone, email, password });
+      const result = await registerApi({
+        company,
+        name,
+        phone,
+        email,
+        password,
+        authAlarm, // ✅ 전송에 포함
+      });
       console.log("✅ 회원가입 성공:", result);
       alert("회원가입 성공!");
     } catch (error) {
@@ -76,6 +84,21 @@ function SignupInputComponent() {
           required
         />
       </div>
+
+      {/* ✅ 알람 수신 여부 체크박스 */}
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          id="authAlarm"
+          checked={authAlarm}
+          onChange={(e) => setAuthAlarm(e.target.checked)}
+          className="mr-2"
+        />
+        <label htmlFor="authAlarm" className="text-sm text-gray-700">
+          이메일 및 문자 알림 수신에 동의합니다.
+        </label>
+      </div>
+
       <button
         type="submit"
         className="w-full bg-green-600 text-white py-2 rounded font-bold hover:bg-green-700"
