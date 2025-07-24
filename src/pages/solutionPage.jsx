@@ -1,3 +1,5 @@
+// 📁 src/pages/SolutionPage.jsx
+
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ScrollHelperComponent from "../components/solution/solutionScrollHelper";
@@ -23,10 +25,7 @@ function SolutionPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 px-0">
-      {/* 이동 도우미 */}
-      <div className="fixed top-[112px] right-4 z-40">
-        <ScrollHelperComponent />
-      </div>
+      {/* 👉 오른쪽 고정 도우미 제거됨 */}
 
       <section id="summary" className="pt-10">
         <h2 className="text-lg font-bold mb-4 px-4 flex items-center gap-2">
