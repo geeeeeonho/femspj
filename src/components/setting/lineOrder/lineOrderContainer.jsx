@@ -1,4 +1,4 @@
-// 📁 src/components/solution/lineOrder/lineOrderContainer.jsx
+// 📁 src/components/setting/lineOrder/lineOrderContainer.jsx
 
 import { LineOrderProvider } from "../../../contexts/lineOrderContext";
 import LineOrderStep1 from "./lineOrderStep1";

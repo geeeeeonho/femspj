@@ -2,9 +2,7 @@
 
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import ScrollHelperComponent from "../components/solution/solutionScrollHelper";
 import AnalyzeLayoutComponent from "../layouts/solution/analyzeLayout";
-import LineOrderLayout from "../layouts/solution/lineOrderLayout";
 import WorkSimulatorLayout from "../layouts/solution/workSimulatorLayout";
 
 function SolutionPage() {
@@ -32,13 +30,6 @@ function SolutionPage() {
           🔎 분석 요약
         </h2>
         <AnalyzeLayoutComponent />
-      </section>
-
-      <section id="line-order" className="pt-20">
-        <h2 className="text-lg font-bold mb-4 px-4 flex items-center gap-2">
-          📦 제품별 설비 순서 입력
-        </h2>
-        <LineOrderLayout />
       </section>
 
       <section id="simulator" className="pt-20">

@@ -1,5 +1,5 @@
 // ✅ 3단계: 버튼 기반 설비 순서 조작 UI (LineOrderStep3)
-// 📁 src/components/solution/lineOrder/lineOrderStep3.jsx
+// 📁 src/components/setting/lineOrder/lineOrderStep3.jsx
 
 function LineOrderStep3({ equipment, onMove, onDelete }) {
   return (

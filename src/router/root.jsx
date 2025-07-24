@@ -19,6 +19,7 @@ const Auth = lazy(() => import("../pages/authPage"));
 const Power = lazy(() => import("../pages/powerPage"));
 const RealTime = lazy(() => import("../pages/realtimePage"));
 const Solution = lazy(() => import("../pages/solutionPage"));
+const Setting = lazy(() => import("../pages/settingPage"));
 
 const router = createBrowserRouter([
   {
@@ -77,6 +78,16 @@ const router = createBrowserRouter([
         <Solution />
       </BasicLayout>
     </Suspense>
+    ),
+  },
+  {
+    path: "/setting", // ⬅️ 새로운 경로
+    element: (
+      <Suspense fallback={<Loading />}>
+        <BasicLayout>
+          <Setting />
+        </BasicLayout>
+      </Suspense>
     ),
   },
 ]);

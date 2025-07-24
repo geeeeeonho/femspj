@@ -22,12 +22,7 @@ function SolutionScrollHelperComponent() {
       >
         분석 요약
       </button>
-      <button
-        onClick={() => scrollToSection("line-order")}
-        className="w-full py-2 text-center hover:bg-[rgba(255,255,255,0.1)] transition"
-      >
-        설비 순서
-      </button>
+
       <button
         onClick={() => scrollToSection("simulator")}
         className="w-full py-2 text-center hover:bg-[rgba(255,255,255,0.1)] transition"

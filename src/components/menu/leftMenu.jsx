@@ -83,6 +83,25 @@ function LeftMenuComponent() {
           </div>
         )}
       </div>
+
+      <hr className="w-10 border-gray-600" />
+
+      {/* 설정 */}
+      <div
+        onMouseEnter={() => setHovered("setting")}
+        onMouseLeave={() => setHovered(null)}
+        className="w-full flex flex-col items-center"
+      >
+        <NavLink
+          to="/setting"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? "bg-gray-700 font-semibold" : ""}`
+          }
+        >
+          <img src="/icons/setting.png" alt="설정" className={iconStyle} />
+          <span>사용자 설정</span>
+        </NavLink>
+      </div>
     </div>
   );
 }

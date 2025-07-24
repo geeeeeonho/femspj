@@ -1,6 +1,6 @@
 // 📁 src/layouts/solution/lineOrderLayout.jsx
 
-import LineOrderContainer from "../../components/solution/lineOrder/lineOrderContainer";
+import LineOrderContainer from "../../components/setting/lineOrder/lineOrderContainer";
 
 /*
   레이아웃: 제품별 설비 순서 입력

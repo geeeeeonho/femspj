@@ -1,5 +1,5 @@
 // ✅ 2단계: 개별 라인 내 설비 순서 조정 컴포넌트 (LineOrderStep2)
-// 📁 src/components/solution/lineOrder/lineOrderStep2.jsx
+// 📁 src/components/setting/lineOrder/lineOrderStep2.jsx
 
 import LineOrderStep3 from "./lineOrderStep3";
 
