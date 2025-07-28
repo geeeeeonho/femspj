@@ -1,9 +1,4 @@
 // 📁 src/pages/authPage.jsx
-/*
-  설명:
-  - 로그인 상태이면 "/"로 강제 리다이렉트
-  - 로그인되지 않은 경우에만 로그인/회원가입 화면 표시
-*/
 
 import { useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
@@ -15,20 +10,31 @@ function AuthPage() {
   const { isLoggedIn } = useAuth();
   const location = useLocation();
 
-  // ✅ 디버깅용 로그 (필요 시 삭제 가능)
   useEffect(() => {
     console.log("authPage 접근, 로그인 상태:", isLoggedIn, "현재 경로:", location.pathname);
   }, [isLoggedIn, location]);
 
-  // ✅ 로그인된 경우 홈으로 이동
   if (isLoggedIn) {
     return <Navigate to="/" replace />;
   }
 
   return (
-    <AuthLayout>
-      <AuthContainer />
-    </AuthLayout>
+    <div
+      className="h-screen w-screen flex bg-cover bg-center"
+      style={{ backgroundImage: "url('/images/login-bg.png')" }} // ✅ 전체 배경 이미지
+    >
+      {/* 왼쪽 설명 영역: 내부에서 투명도 설정 */}
+      <div className="w-1/2">
+        <AuthLayout />
+      </div>
+
+      {/* 오른쪽 로그인 영역: 배경 그대로 보여줌 */}
+      <div className="w-1/2 flex items-center justify-center">
+        <div className="w-full max-w-md px-8">
+          <AuthContainer />
+        </div>
+      </div>
+    </div>
   );
 }
 
