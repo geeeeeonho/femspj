@@ -1,8 +1,10 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
+
 import PowerScrollHelperComponent from "../power/powerScrollHelper";
 import RealtimeScrollHelperComponent from "../realtime/realtimeScrollHelper";
 import SolutionScrollHelperComponent from "../solution/solutionScrollHelper";
+import SettingScrollHelperComponent from "../setting/settingScrollHelper"; // ✅ 추가
 
 function LeftMenuComponent() {
   const [hovered, setHovered] = useState(null);
@@ -86,7 +88,7 @@ function LeftMenuComponent() {
 
       <hr className="w-10 border-gray-600" />
 
-      {/* 설정 */}
+      {/* 사용자 설정 */}
       <div
         onMouseEnter={() => setHovered("setting")}
         onMouseLeave={() => setHovered(null)}
@@ -101,6 +103,11 @@ function LeftMenuComponent() {
           <img src="/icons/setting.png" alt="설정" className={iconStyle} />
           <span>사용자 설정</span>
         </NavLink>
+        {(hovered === "setting" || location.pathname === "/setting") && (
+          <div className="w-full px-2 py-2 transition-all duration-300">
+            <SettingScrollHelperComponent />
+          </div>
+        )}
       </div>
     </div>
   );
