@@ -1,15 +1,10 @@
-// React 컴포넌트 파일: root 컴포넌트 기능
-/*
-  파일: root.jsx
-  설명: 모든 페이지를 BasicLayout으로 감싸는 구조로 수정
-*/
+// 📁 src/router/root.jsx
 
-import {
-  createBrowserRouter,
-} from "react-router";
-
+import { createBrowserRouter } from "react-router";
 import { lazy, Suspense } from "react";
 import BasicLayout from "../layouts/basicLayout";
+import RouteProtect from "./routeProtect";
+
 
 const Loading = () => <div>Loading....</div>;
 
@@ -34,9 +29,11 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <Suspense fallback={<Loading />}>
-        <BasicLayout>
-          <Main />
-        </BasicLayout>
+        <RouteProtect>
+          <BasicLayout>
+            <Main />
+          </BasicLayout>
+        </RouteProtect>
       </Suspense>
     ),
   },
@@ -54,39 +51,47 @@ const router = createBrowserRouter([
     path: "/power",
     element: (
       <Suspense fallback={<Loading />}>
-        <BasicLayout>
-          <Power />
-        </BasicLayout>
+        <RouteProtect>
+          <BasicLayout>
+            <Power />
+          </BasicLayout>
+        </RouteProtect>
       </Suspense>
     ),
   },
   {
-  path: "/realtime",
-  element: (
-    <Suspense fallback={<Loading />}>
-      <BasicLayout>
-        <RealTime />
-      </BasicLayout>
-    </Suspense>
-    ),
-  },
-  {
-  path: "/solution",
-  element: (
-    <Suspense fallback={<Loading />}>
-      <BasicLayout>
-        <Solution />
-      </BasicLayout>
-    </Suspense>
-    ),
-  },
-  {
-    path: "/setting", // ⬅️ 새로운 경로
+    path: "/realtime",
     element: (
       <Suspense fallback={<Loading />}>
-        <BasicLayout>
-          <Setting />
-        </BasicLayout>
+        <RouteProtect>
+          <BasicLayout>
+            <RealTime />
+          </BasicLayout>
+        </RouteProtect>
+      </Suspense>
+    ),
+  },
+  {
+    path: "/solution",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <RouteProtect>
+          <BasicLayout>
+            <Solution />
+          </BasicLayout>
+        </RouteProtect>
+      </Suspense>
+    ),
+  },
+  {
+    path: "/setting",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <RouteProtect>
+          <BasicLayout>
+            <Setting />
+          </BasicLayout>
+        </RouteProtect>
       </Suspense>
     ),
   },

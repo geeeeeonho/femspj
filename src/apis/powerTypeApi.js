@@ -2,7 +2,8 @@
 
 import axios from "axios";
 
-const BASE_URL = "https://your-server.com/api"; // 실제 서버 주소
+// ✅ 환경 변수에서 API 주소 불러오기
+const BASE_URL = 'api.sensor-tive.com';
 
 // ✅ 샘플 전환 변수
 const isSampleMode = true; // true면 mock 사용, false면 실제 서버 사용

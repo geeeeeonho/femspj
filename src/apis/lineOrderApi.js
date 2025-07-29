@@ -1,51 +1,64 @@
 // 📁 src/apis/lineOrderApi.js
+// 설명: 샘플 모드 여부에 따라 불러오기/저장 API를 자동 분기합니다.
 
-// ✅ 설비 순서 불러오기 (샘플 or 실제)
-export async function lineOrderImportApi(useSample = true) {
-  if (useSample) {
-    // 샘플 데이터: 라인 2개, 설비 5개씩
-    return Promise.resolve([
-      {
-        lineId: "line1",
-        equipment: ["설비A", "설비B", "설비C", "설비D", "설비E"],
-      },
-      {
-        lineId: "line2",
-        equipment: ["설비F", "설비G", "설비H", "설비I", "설비J"],
-      },
-    ]);
-  }
+// ✅ 환경 변수에서 API 주소 불러오기
+const BASE_URL = 'api.sensor-tive.com';
 
-  // ✅ 실제 API 사용 시 코드 (주석 처리)
-  /*
-  try {
-    const res = await fetch("/api/equipment/order");
-    if (!res.ok) throw new Error("서버 응답 오류");
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    console.error("🚨 설비 순서 불러오기 실패:", err);
-    return [];
-  }
-  */
+// ✅ 샘플 모드 전역 설정 (false로 바꾸면 실서버와 연결됨)
+const isSampleMode = true;
+
+/* -----------------------------------------
+ * ✅ 샘플 데이터 함수들 (isSampleMode = true)
+ * ----------------------------------------- */
+async function lineOrderImportSample() {
+  return Promise.resolve([
+    {
+      lineId: "line1",
+      equipment: ["설비A", "설비B", "설비C", "설비D", "설비E"],
+    },
+    {
+      lineId: "line2",
+      equipment: ["설비F", "설비G", "설비H", "설비I", "설비J"],
+    },
+  ]);
 }
 
-// ✅ 설비 순서 전송 (서버 저장용)
-export async function lineOrderExportApi(updatedData) {
+async function lineOrderExportSample(updatedData) {
+  console.log("📦 샘플 모드: 저장된 설비 순서 →", updatedData);
+  return { success: true };
+}
+
+/* -----------------------------------------
+ * ✅ 실제 API 함수들 (isSampleMode = false)
+ * ----------------------------------------- */
+async function lineOrderImportReal() {
   try {
-    const res = await fetch("/api/equipment/order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedData),
-    });
-
-    if (!res.ok) throw new Error("전송 실패");
-
+    const res = await fetch(`${BASE_URL}/api/equipment/order`);
+    if (!res.ok) throw new Error("서버 응답 오류");
     return await res.json();
   } catch (err) {
-    console.error("🚨 설비 순서 전송 실패:", err);
+    console.error("🚨 실서버 설비 순서 불러오기 실패:", err);
+    return [];
+  }
+}
+
+async function lineOrderExportReal(updatedData) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/equipment/order`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
+    if (!res.ok) throw new Error("전송 실패");
+    return await res.json();
+  } catch (err) {
+    console.error("🚨 실서버 설비 순서 전송 실패:", err);
     return { success: false };
   }
 }
+
+/* -----------------------------------------
+ * ✅ export: 샘플 모드 여부에 따라 자동 선택
+ * ----------------------------------------- */
+export const lineOrderImportApi = isSampleMode ? lineOrderImportSample : lineOrderImportReal;
+export const lineOrderExportApi = isSampleMode ? lineOrderExportSample : lineOrderExportReal;
