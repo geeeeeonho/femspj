@@ -1,5 +1,3 @@
-// 📁 src/layouts/authLayout.jsx
-
 import { useEffect, useRef, useState } from "react";
 
 function AuthLayout() {
@@ -7,12 +5,10 @@ function AuthLayout() {
   const contactRef = useRef(null);
   const systemRef = useRef(null);
 
-  const [visibleSection, setVisibleSection] = useState("");
+  const [visibleSection, setVisibleSection] = useState("intro");
 
   useEffect(() => {
-    const options = {
-      threshold: 0.3,
-    };
+    const options = { threshold: 0.3 };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -30,80 +26,105 @@ function AuthLayout() {
     return () => observer.disconnect();
   }, []);
 
-  const scrollToSection = (ref) => {
-    if (ref.current) {
-      ref.current.scrollIntoView({ behavior: "smooth" });
-    }
+  // ✅ 섹션별 이미지 경로
+  const sectionImages = {
+    intro: "/images/intro.png",
+    contact: "/images/contact.png",
+    system: "/images/system.png",
   };
 
   return (
-    <div className="h-full w-full overflow-x-hidden bg-white/10 backdrop-blur-md rounded-xl shadow-lg text-white p-4 flex flex-col">
-      {/* 버튼 영역 */}
-      <div className="flex justify-center space-x-3 mb-4">
-        <button
-          onClick={() => scrollToSection(introRef)}
-          className="px-4 py-2 rounded-full border border-white/60 hover:bg-white/20 transition"
-        >
-          기본 소개
-        </button>
-        <button
-          onClick={() => scrollToSection(contactRef)}
-          className="px-4 py-2 rounded-full border border-white/60 hover:bg-white/20 transition"
-        >
-          문의하기
-        </button>
-        <button
-          onClick={() => scrollToSection(systemRef)}
-          className="px-4 py-2 rounded-full border border-white/60 hover:bg-white/20 transition"
-        >
-          시스템 소개
-        </button>
-      </div>
-
-      {/* 스크롤 컨테이너: 세로 스크롤 + 스크롤바 왼쪽 + 좌우 스크롤 차단 */}
+    <div className="h-full w-full overflow-x-hidden text-white p-4 flex flex-col">
       <div
         className="flex-1 overflow-y-auto scroll-smooth pr-2"
         style={{ direction: "rtl", scrollbarWidth: "thin", overflowX: "hidden" }}
       >
         <div className="flex flex-col space-y-12" style={{ direction: "ltr" }}>
-          {/* 기본 소개 */}
+          {/* 🔹 기본 소개 */}
           <section
+            id="intro"
             ref={introRef}
             data-id="intro"
-            className={`relative min-h-[80vh] p-6 rounded-xl transition-all duration-700 ease-out transform ${
-              visibleSection === "intro" ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
-            } bg-white/30 text-gray-900`}
+            className={`relative min-h-[80vh] p-6 rounded-xl bg-white/30 text-gray-900 transition-all duration-700 ease-out transform ${
+              visibleSection === "intro"
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 -translate-x-10"
+            }`}
           >
-            <h2 className="text-2xl font-bold mb-2">기본 소개</h2>
-            <p>스마트 에너지 관리 시스템 FEMSystem에 오신 걸 환영합니다.</p>
+            <div className="flex flex-row items-center gap-10">
+              {/* 왼쪽 텍스트 */}
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold mb-2">기본 소개</h2>
+                <p>스마트 에너지 관리 시스템 FEMSystem에 오신 걸 환영합니다.</p>
+              </div>
+
+              {/* 오른쪽 이미지 */}
+              <div className="w-1/2">
+                <img
+                  src={sectionImages["intro"]}
+                  alt="기본 소개 이미지"
+                  className="rounded-xl shadow-md max-h-[60vh] w-full object-cover"
+                />
+              </div>
+            </div>
           </section>
 
-          {/* 문의하기 */}
+          {/* 🔹 문의하기 */}
           <section
+            id="contact"
             ref={contactRef}
             data-id="contact"
-            className={`relative min-h-[80vh] p-6 rounded-xl transition-all duration-700 ease-out transform ${
+            className={`relative min-h-[80vh] p-6 rounded-xl bg-blue-100/30 text-gray-900 transition-all duration-700 ease-out transform ${
               visibleSection === "contact"
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-10"
-            } bg-blue-100/30 text-gray-900`}
+            }`}
           >
-            <h2 className="text-2xl font-bold mb-2">문의하기</h2>
-            <p>문의: contact@fems.com<br />전화: 010-1234-5678</p>
+            <div className="flex flex-row items-center gap-10">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold mb-2">문의하기</h2>
+                <p>
+                  문의: contact@fems.com
+                  <br />
+                  전화: 010-1234-5678
+                </p>
+              </div>
+
+              <div className="w-1/2">
+                <img
+                  src={sectionImages["contact"]}
+                  alt="문의 이미지"
+                  className="rounded-xl shadow-md max-h-[60vh] w-full object-cover"
+                />
+              </div>
+            </div>
           </section>
 
-          {/* 시스템 소개 */}
+          {/* 🔹 시스템 소개 */}
           <section
+            id="system"
             ref={systemRef}
             data-id="system"
-            className={`relative min-h-[80vh] p-6 rounded-xl transition-all duration-700 ease-out transform ${
+            className={`relative min-h-[80vh] p-6 rounded-xl bg-green-100/30 text-gray-900 transition-all duration-700 ease-out transform ${
               visibleSection === "system"
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-10"
-            } bg-green-100/30 text-gray-900`}
+            }`}
           >
-            <h2 className="text-2xl font-bold mb-2">시스템 소개</h2>
-            <p>전력 모니터링, 분석, 알림 시스템이 통합된 솔루션을 제공합니다.</p>
+            <div className="flex flex-row items-center gap-10">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold mb-2">시스템 소개</h2>
+                <p>전력 모니터링, 분석, 알림 시스템이 통합된 솔루션을 제공합니다.</p>
+              </div>
+
+              <div className="w-1/2">
+                <img
+                  src={sectionImages["system"]}
+                  alt="시스템 소개 이미지"
+                  className="rounded-xl shadow-md max-h-[60vh] w-full object-cover"
+                />
+              </div>
+            </div>
           </section>
         </div>
       </div>

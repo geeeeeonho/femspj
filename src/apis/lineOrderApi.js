@@ -2,7 +2,7 @@
 // 설명: 샘플 모드 여부에 따라 불러오기/저장 API를 자동 분기합니다.
 
 // ✅ 환경 변수에서 API 주소 불러오기
-const BASE_URL = 'api.sensor-tive.com';
+const BASE_URL = 'https://api.sensor-tive.com';
 
 // ✅ 샘플 모드 전역 설정 (false로 바꾸면 실서버와 연결됨)
 const isSampleMode = true;
