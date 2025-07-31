@@ -24,11 +24,11 @@ function AuthPage() {
 
   return (
     <div
-      className="h-screen w-screen flex bg-cover bg-center"
+      className="h-screen w-screen flex bg-cover bg-center relative"
       style={{ backgroundImage: "url('/images/login-bg.png')" }}
     >
-      {/* ✅ 왼쪽 설명 영역 (스크롤 가능, 상대 위치 기준) */}
-      <div className="w-4/7 overflow-y-auto max-h-screen pr-2 scrollbar-none relative">
+      {/* ✅ 왼쪽 설명 영역 (스크롤 가능) */}
+      <div className="w-4/7 overflow-y-auto max-h-screen pr-2 pt-[70px] scrollbar-none relative z-10">
         <style>
           {`
             .scrollbar-none::-webkit-scrollbar { display: none; }
@@ -39,18 +39,18 @@ function AuthPage() {
         <div className="p-8">
           <AuthLayout />
         </div>
-
-        {/* ✅ 설명 오른쪽 위에 붙은 고정 스크롤 버튼 */}
-        <div className="absolute top-8 left-full ml-4 z-50">
-          <AuthScrollHelperComponent />
-        </div>
       </div>
 
-      {/* 오른쪽 로그인 영역 */}
+      {/* ✅ 오른쪽 로그인 영역 */}
       <div className="w-3/7 flex items-center pl-16">
         <div className="w-full max-w-md ml-auto mr-16">
           <AuthContainer />
         </div>
+      </div>
+
+      {/* ✅ 화면 고정 스크롤 버튼 (왼쪽 위 또는 위치 조정 가능) */}
+      <div className="fixed top-4 left-6 z-50">
+        <AuthScrollHelperComponent />
       </div>
     </div>
   );
