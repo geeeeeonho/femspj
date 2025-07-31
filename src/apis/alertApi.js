@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // ✅ 환경 변수에서 API 주소 불러오기
-const BASE_URL = 'api.sensor-tive.com';
+const BASE_URL = 'https://api.sensor-tive.com';
 
 // 샘플 모드 여부
 const isSampleMode = true;

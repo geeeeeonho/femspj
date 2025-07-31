@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const BASE_URL = 'api.sensor-tive.com';
+const BASE_URL = 'https://api.sensor-tive.com';
 
 // ✅ 샘플 모드 여부 (true로 설정 시 아래 mock 사용)
 const isSampleMode = true;
