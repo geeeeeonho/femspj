@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import MainOverlayComponent from "../components/main/mainOverLay";
-
+import MainOverlayComponent from "../components/main/mainOverlay";
 
 function MainLayout({ usert = "사용자" }) {
   const [selectedOverlay, setSelectedOverlay] = useState(null);
@@ -17,9 +16,10 @@ function MainLayout({ usert = "사용자" }) {
     <div className="w-full min-h-screen bg-white flex flex-col items-center justify-center px-6 py-10 relative">
       {/* ✅ 상단 텍스트 */}
       <h2 className="text-xl text-gray-800 text-center mb-12 leading-relaxed font-semibold">
-        환영합니다. {usert}님<br />
+        반갑습니다, {usert}님!<br />
         <span className="font-normal text-gray-700">
-          EASY FEMS는 보다 사용자 친화적인 에너지 관리, 분석에 최적화된 스마트 팩토리 시스템입니다.
+          EASY FEMS는 효율적인 에너지 운영과 직관적인 데이터 분석을 통해<br />
+          스마트한 공장 관리를 실현하는 차세대 플랫폼입니다.
         </span>
       </h2>
 
@@ -29,7 +29,7 @@ function MainLayout({ usert = "사용자" }) {
         <div className="absolute left-0 top-0">
           <button
             onClick={() => handleSelect("power")}
-            className="w-[320px] py-4 px-6 rounded-full border-4 border-pink-600 text-gray-800 font-medium text-lg hover:bg-pink-50 transition"
+            className="w-[320px] py-4 px-6 rounded-full border-4 border-blue-500 text-gray-800 font-medium text-lg hover:bg-blue-100 transition"
           >
             소비전력 파악
           </button>
@@ -39,7 +39,7 @@ function MainLayout({ usert = "사용자" }) {
         <div className="absolute right-0 top-0">
           <button
             onClick={() => handleSelect("realtime")}
-            className="w-[320px] py-4 px-6 rounded-full border-4 border-pink-400 text-gray-800 font-medium text-lg hover:bg-pink-50 transition"
+            className="w-[320px] py-4 px-6 rounded-full border-4 border-blue-400 text-gray-800 font-medium text-lg hover:bg-blue-100 transition"
           >
             실시간 상황 보고
           </button>
@@ -49,9 +49,9 @@ function MainLayout({ usert = "사용자" }) {
         <div className="absolute left-0 bottom-0">
           <button
             onClick={() => handleSelect("analysis")}
-            className="w-[320px] py-4 px-6 rounded-full border-4 border-pink-400 text-gray-800 font-medium text-lg hover:bg-pink-50 transition"
+            className="w-[320px] py-4 px-6 rounded-full border-4 border-blue-400 text-gray-800 font-medium text-lg hover:bg-blue-100 transition"
           >
-            종합적인 분석 및 개선 방안
+            종합 분석 및 개선
           </button>
         </div>
 
@@ -59,9 +59,9 @@ function MainLayout({ usert = "사용자" }) {
         <div className="absolute right-0 bottom-0">
           <button
             onClick={() => handleSelect("setting")}
-            className="w-[320px] py-4 px-6 rounded-full border-4 border-pink-400 text-gray-800 font-medium text-lg hover:bg-pink-50 transition"
+            className="w-[320px] py-4 px-6 rounded-full border-4 border-blue-400 text-gray-800 font-medium text-lg hover:bg-blue-100 transition"
           >
-            사용자 환경 변경
+            사용자 환경 설정
           </button>
         </div>
 

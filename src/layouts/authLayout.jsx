@@ -10,7 +10,7 @@ function AuthLayout() {
   useEffect(() => {
     const options = {
       threshold: 0.3,
-      rootMargin: "0px 0px -10% 0px", // 🔹 하단에 약간의 여유 공간 확보
+      rootMargin: "0px 0px -10% 0px",
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -22,7 +22,7 @@ function AuthLayout() {
       });
     }, options);
 
-    [introRef, contactRef, systemRef].forEach((ref) => {
+    [introRef, systemRef, contactRef].forEach((ref) => {
       if (ref.current) observer.observe(ref.current);
     });
 
@@ -47,7 +47,7 @@ function AuthLayout() {
             id="intro"
             ref={introRef}
             data-id="intro"
-            className={`relative min-h-[80vh] p-6 py-10 rounded-xl bg-green-100/30 text-gray-900 transition-all duration-700 ease-out transform ${
+            className={`relative min-h-[80vh] p-6 py-10 rounded-xl bg-green-100/30 text-white transition-all duration-700 ease-out transform ${
               visibleSection === "intro"
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-10"
@@ -68,12 +68,38 @@ function AuthLayout() {
             </div>
           </section>
 
-          {/* 🔹 문의하기 */}
+          {/* 🔹 시스템 소개 (위치 변경) */}
+          <section
+            id="system"
+            ref={systemRef}
+            data-id="system"
+            className={`relative min-h-[80vh] p-6 py-10 rounded-xl bg-green-100/30 text-white transition-all duration-700 ease-out transform ${
+              visibleSection === "system"
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 -translate-x-10"
+            }`}
+          >
+            <div className="flex flex-row items-center gap-10">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold mb-2">시스템 소개</h2>
+                <p>전력 모니터링, 분석, 알림 시스템이 통합된 솔루션을 제공합니다.</p>
+              </div>
+              <div className="w-1/2">
+                <img
+                  src={sectionImages["system"]}
+                  alt="시스템 소개 이미지"
+                  className="rounded-xl shadow-md max-h-[60vh] w-full object-cover"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* 🔹 문의하기 (위치 변경) */}
           <section
             id="contact"
             ref={contactRef}
             data-id="contact"
-            className={`relative min-h-[80vh] p-6 py-10 rounded-xl bg-green-100/30 text-gray-900 transition-all duration-700 ease-out transform ${
+            className={`relative min-h-[80vh] p-6 py-10 rounded-xl bg-green-100/30 text-white transition-all duration-700 ease-out transform ${
               visibleSection === "contact"
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-10"
@@ -92,32 +118,6 @@ function AuthLayout() {
                 <img
                   src={sectionImages["contact"]}
                   alt="문의 이미지"
-                  className="rounded-xl shadow-md max-h-[60vh] w-full object-cover"
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* 🔹 시스템 소개 */}
-          <section
-            id="system"
-            ref={systemRef}
-            data-id="system"
-            className={`relative min-h-[80vh] p-6 py-10 rounded-xl bg-green-100/30 text-gray-900 transition-all duration-700 ease-out transform ${
-              visibleSection === "system"
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 -translate-x-10"
-            }`}
-          >
-            <div className="flex flex-row items-center gap-10">
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold mb-2">시스템 소개</h2>
-                <p>전력 모니터링, 분석, 알림 시스템이 통합된 솔루션을 제공합니다.</p>
-              </div>
-              <div className="w-1/2">
-                <img
-                  src={sectionImages["system"]}
-                  alt="시스템 소개 이미지"
                   className="rounded-xl shadow-md max-h-[60vh] w-full object-cover"
                 />
               </div>

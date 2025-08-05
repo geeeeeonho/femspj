@@ -9,7 +9,7 @@ function AuthScrollHelperComponent() {
 
   // ✅ 현재 보이는 section 감지
   useEffect(() => {
-    const sections = ["intro", "contact", "system"];
+    const sections = ["intro", "system", "contact"]; // ✅ 순서 변경됨
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -41,7 +41,7 @@ function AuthScrollHelperComponent() {
 
   return (
     <div className="flex flex-row space-x-2 p-2 bg-white/30 rounded-xl shadow-md backdrop-blur-sm text-gray-800 w-fit transition-all duration-300">
-      {["intro", "contact", "system"].map((id) => {
+      {["intro", "system", "contact"].map((id) => {
         const isActive = activeSection === id;
         return (
           <button
@@ -54,7 +54,7 @@ function AuthScrollHelperComponent() {
                   : "bg-white/50 hover:bg-white/70 text-gray-900"
               }`}
           >
-            {id === "intro" ? "소개" : id === "contact" ? "문의" : "시스템"}
+            {id === "intro" ? "소개" : id === "system" ? "시스템" : "문의"}
           </button>
         );
       })}

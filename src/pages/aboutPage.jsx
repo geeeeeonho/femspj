@@ -1,58 +1,75 @@
 // 📄 파일: src/pages/about.jsx
-// ℹ️ Easy FEMS 소개 페이지 (전체 메뉴 설명 포함)
+// ℹ️ Easy FEMS 소개 페이지 (4대 메뉴 및 기능 설명, 줄바꿈 적용)
 
 function AboutPage() {
   return (
     <div className="p-6 space-y-6 max-w-3xl mx-auto">
-      {/* 소개 박스 */}
+      {/* 전력 소비 메뉴 */}
       <div className="bg-white rounded shadow p-6">
         <div className="flex items-center mb-4">
-          <img src="/icons/fems.png" alt="FEMS 소개" className="w-10 h-10 mr-3" />
-          <h1 className="text-2xl font-semibold">Easy FEMS란?</h1>
+          <img
+            src="/icons/power.png"
+            alt="전력 소비 아이콘"
+            className="w-10 h-10 mr-3"
+          />
+          <h2 className="text-xl font-semibold">📊 전력 소비</h2>
         </div>
-        <p className="text-gray-700 leading-relaxed">
-          Easy FEMS는 기존 FEMS 시스템보다 <strong>간편하고 직관적</strong>인 사용자 경험을 목표로 개발된
-          <span className="text-blue-600 font-semibold"> 에너지 관리 솔루션</span>입니다.
-          실시간으로 전력 기준치 초과 상황을 감지하며, 알림 기능을 통해
-          <strong> 빠르게 대응</strong>할 수 있습니다.
-        </p>
+        <ul className="text-gray-700 leading-relaxed list-disc list-inside space-y-1">
+          <li>전체 공장의 일간·주간·월간 전력 사용량을 한눈에 확인</li>
+          <li>설비 라인별 전력 소비 비중을 도넛／막대 그래프로 시각화</li>
+          <li>필요 시 CSV 다운로드 및 보고서 생성 기능 지원</li>
+        </ul>
       </div>
 
-      {/* 전력 소비 설명 */}
+      {/* 실시간 상황 메뉴 */}
       <div className="bg-white rounded shadow p-6">
         <div className="flex items-center mb-4">
-          <img src="/icons/power.png" alt="전력소비 아이콘" className="w-10 h-10 mr-3" />
-          <h2 className="text-xl font-semibold">📊 전력 소비 메뉴</h2>
+          <img
+            src="/icons/realtime.png"
+            alt="실시간 상황 아이콘"
+            className="w-10 h-10 mr-3"
+          />
+          <h2 className="text-xl font-semibold">⏱ 실시간 상황</h2>
         </div>
-        <p className="text-gray-700 leading-relaxed">
-          이 메뉴에서는 <strong>전체 전력 사용량</strong>과 <strong>설비 라인별 전력 소비</strong>를 시각적으로 분석할 수 있습니다.
-          일간, 주간, 월간 단위의 통계 자료를 확인할 수 있으며, 향후에는 AI 기반 예측 기능도 제공될 예정입니다.
-        </p>
+        <ul className="text-gray-700 leading-relaxed list-disc list-inside space-y-1">
+          <li>5분 단위로 갱신되는 전력 데이터 스트림</li>
+          <li>기준치 초과 시 실시간 팝업 알림 및 색상 경고 표시</li>
+          <li>이상 징후 발생 설비로 바로 이동하는 스크롤·네비게이션 버튼</li>
+        </ul>
       </div>
 
-      {/* 실시간 상황 설명 */}
+      {/* 종합 분석 메뉴 */}
       <div className="bg-white rounded shadow p-6">
         <div className="flex items-center mb-4">
-          <img src="/icons/realtime.png" alt="실시간 아이콘" className="w-10 h-10 mr-3" />
-          <h2 className="text-xl font-semibold">⏱ 실시간 상황 메뉴</h2>
+          <img
+            src="/icons/analysis.png"
+            alt="종합 분석 아이콘"
+            className="w-10 h-10 mr-3"
+          />
+          <h2 className="text-xl font-semibold">📈 종합 분석</h2>
         </div>
-        <p className="text-gray-700 leading-relaxed">
-          실시간 상황 메뉴에서는 <strong>5분 간격으로 업데이트되는 전력 데이터</strong>를 통해,
-          현재 공장의 상태를 빠르게 파악할 수 있습니다.
-          이상 징후가 감지될 경우 <strong>시각적 알림</strong>으로 즉시 대응할 수 있어 운영의 민첩성을 높입니다.
-        </p>
+        <ul className="text-gray-700 leading-relaxed list-disc list-inside space-y-1">
+          <li>축적된 전력 데이터 기반의 트렌드 분석 및 이상 패턴 탐지</li>
+          <li>AI 예측 모델을 통한 미래 전력 수요 예측 (베타)</li>
+          <li>기간별 비교 차트, 상관관계 히트맵 등 고급 시각화 도구 제공</li>
+        </ul>
       </div>
 
-      {/* 스마트 솔루션 설명 */}
+      {/* 사용자 설정 메뉴 */}
       <div className="bg-white rounded shadow p-6">
         <div className="flex items-center mb-4">
-          <img src="/icons/solution1.png" alt="솔루션 아이콘" className="w-10 h-10 mr-3" />
-          <h2 className="text-xl font-semibold">🧠 스마트 솔루션 메뉴</h2>
+          <img
+            src="/icons/settings.png"
+            alt="사용자 설정 아이콘"
+            className="w-10 h-10 mr-3"
+          />
+          <h2 className="text-xl font-semibold">⚙️ 사용자 설정</h2>
         </div>
-        <p className="text-gray-700 leading-relaxed">
-          스마트 솔루션 메뉴는 축적된 데이터를 기반으로 <strong>가장 적합한 절감 방법</strong>을 제안합니다.
-          각 설비별 소비 특성을 분석하고, <strong>사용자가 직접 개선안을 실험</strong>할 수 있는 기능도 확장 예정입니다.
-        </p>
+        <ul className="text-gray-700 leading-relaxed list-disc list-inside space-y-1">
+          <li>알림 기준(임계값) 및 알림 채널(이메일/SMS) 설정</li>
+          <li>대시보드 레이아웃 커스터마이징 및 즐겨찾기 패널 관리</li>
+          <li>계정 정보·권한 관리, 외부 시스템 연동(API 키) 설정</li>
+        </ul>
       </div>
     </div>
   );
