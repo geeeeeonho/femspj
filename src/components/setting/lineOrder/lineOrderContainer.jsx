@@ -1,20 +1,25 @@
-// 📁 src/components/setting/lineOrder/lineOrderContainer.jsx
+// 📁 src/components/setting/lineOrder/LineOrderContainer.jsx
 
-import { LineOrderProvider } from "../../../contexts/lineOrderContext";
-import LineOrderStep1 from "./lineOrderStep1";
+import React, { useEffect } from "react";
+import { useLineOrder } from "../../../contexts/lineOrderContext";
+import LineOrderDisplay from "./LineOrderDisplay";
+import LineOrderEditor from "./LineOrderEditor";
 
-/*
-  컴포넌트: 설비 순서 컨테이너
-  설명: 라인 순서 조정 전체 컴포넌트를 감싸는 최상위 컨테이너
-  역할: LineOrderProvider를 감싸고 1단계 컴포넌트부터 렌더링
-*/
+export default function LineOrderContainer() {
+  const { fetchLineOrder, loading } = useLineOrder();
 
-function LineOrderContainer() {
+  useEffect(() => {
+    fetchLineOrder();
+  }, [fetchLineOrder]);
+
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+
   return (
-    <LineOrderProvider>
-      <LineOrderStep1 />
-    </LineOrderProvider>
+    <div className="space-y-8">
+      <LineOrderDisplay />
+      <LineOrderEditor />
+    </div>
   );
 }
-
-export default LineOrderContainer;
