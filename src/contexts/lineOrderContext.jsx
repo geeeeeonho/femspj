@@ -1,5 +1,3 @@
-// 📁 src/contexts/lineOrderContext.jsx
-
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { lineOrderImportApi, lineOrderExportApi } from '../apis/lineOrderApi';
 
@@ -16,6 +14,7 @@ export function LineOrderProvider({ children }) {
       const data = await lineOrderImportApi();
       const normalized = data.map(line => ({
         lineId: line.lineId,
+        productId: line.productId || '',
         equipment: line.equipment || [],
         info: line.info || {},
       }));
@@ -41,12 +40,21 @@ export function LineOrderProvider({ children }) {
   const addLine = useCallback(() => {
     setLineOrder(prev => [
       ...prev,
-      { lineId: `line${prev.length + 1}`, equipment: [], info: {} },
+      { lineId: `line${prev.length + 1}`, productId: '', equipment: [], info: {} },
     ]);
   }, []);
 
   const deleteLine = useCallback(lineIndex => {
     setLineOrder(prev => prev.filter((_, idx) => idx !== lineIndex));
+  }, []);
+
+  // 제품 ID 업데이트
+  const updateProductId = useCallback((lineIndex, newProductId) => {
+    setLineOrder(prev => {
+      const lines = [...prev];
+      lines[lineIndex] = { ...lines[lineIndex], productId: newProductId };
+      return lines;
+    });
   }, []);
 
   // 설비 순서 이동
@@ -128,6 +136,7 @@ export function LineOrderProvider({ children }) {
         saveLineOrder,
         addLine,
         deleteLine,
+        updateProductId,
         moveEquip,
         renameEquipment,
         addEquipment,

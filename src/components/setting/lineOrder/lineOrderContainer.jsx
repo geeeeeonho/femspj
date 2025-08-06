@@ -2,8 +2,8 @@
 
 import React, { useEffect } from "react";
 import { useLineOrder } from "../../../contexts/lineOrderContext";
-import LineOrderDisplay from "./LineOrderDisplay";
-import LineOrderEditor from "./LineOrderEditor";
+import LineOrderDisplay from "./lineOrderDisplay";
+import LineOrderEditor from "./lineOrderEditor";
 
 export default function LineOrderContainer() {
   const { fetchLineOrder, loading } = useLineOrder();

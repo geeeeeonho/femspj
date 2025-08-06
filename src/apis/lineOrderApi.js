@@ -11,10 +11,11 @@ const isSampleMode = true;
  * ✅ 샘플 데이터 함수들 (isSampleMode = true)
  * ----------------------------------------- */
 async function lineOrderImportSample() {
-  // 샘플 데이터: lineId, equipment, info 객체 포함
+  // 샘플 데이터: lineId, productId, equipment, info 객체 포함
   return Promise.resolve([
     {
       lineId: "line1",
+      productId: "제품A",         // 각 라인에 매칭되는 제품 ID (제품 이름)
       equipment: ["설비A", "설비B", "설비C", "설비D", "설비E"],
       info: {
         "설비A": "샘플 정보 A",
@@ -26,6 +27,7 @@ async function lineOrderImportSample() {
     },
     {
       lineId: "line2",
+      productId: "제품B",         // 각 라인에 매칭되는 제품 ID (제품 이름)
       equipment: ["설비F", "설비G", "설비H", "설비I", "설비J"],
       info: {
         "설비F": "샘플 정보 F",
@@ -47,7 +49,8 @@ async function lineOrderImportReal() {
   try {
     const res = await fetch(`${BASE_URL}/api/equipment/order`);
     if (!res.ok) throw new Error("서버 응답 오류");
-    return await res.json(); // 서버 JSON에 lineId, equipment, info 포함
+    // 서버에서 lineId, productId, equipment, info 포함된 JSON 반환
+    return await res.json();
   } catch (err) {
     console.error("🚨 실서버 설비 순서 불러오기 실패:", err);
     return [];
