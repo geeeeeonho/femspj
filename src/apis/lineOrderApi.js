@@ -1,5 +1,5 @@
 // 📁 src/apis/lineOrderApi.js
-// 설명: 샘플 모드 여부에 따라 불러오기/저장 API를 자동 분기합니다.
+// 설명: 샘플 모드 여부에 따라 API의 “raw” 형태 ↔ Context 형태 간 매핑을 담당합니다.
 
 // ✅ 환경 변수에서 API 주소 불러오기
 const BASE_URL = 'https://api.sensor-tive.com';
@@ -8,66 +8,118 @@ const BASE_URL = 'https://api.sensor-tive.com';
 const isSampleMode = true;
 
 /* -----------------------------------------
- * ✅ 샘플 데이터 함수들 (isSampleMode = true)
+ * ✅ Raw API 형태
+ *   [
+ *     {
+ *       productId: "p1",
+ *       equipment: [
+ *         { facId: "123", m_index: 0 },
+ *         { facId: "456", m_index: 1 },
+ *         { facId: "789", m_index: 2 }
+ *       ]
+ *     },
+ *     ...
+ *   ]
  * ----------------------------------------- */
-async function lineOrderImportSample() {
-  // 샘플 데이터: lineId, productId, equipment, info 객체 포함
+async function fetchRawSample() {
   return Promise.resolve([
     {
-      lineId: "line1",
-      productId: "제품A",         // 각 라인에 매칭되는 제품 ID (제품 이름)
-      equipment: ["설비A", "설비B", "설비C", "설비D", "설비E"],
-      info: {
-        "설비A": "샘플 정보 A",
-        "설비B": "샘플 정보 B",
-        "설비C": "샘플 정보 C",
-        "설비D": "샘플 정보 D",
-        "설비E": "샘플 정보 E",
-      },
+      productId: "제품A",
+      equipment: [
+        { facId: "설비A", m_index: 0 },
+        { facId: "설비B", m_index: 1 },
+        { facId: "설비C", m_index: 2 },
+      ]
     },
     {
-      lineId: "line2",
-      productId: "제품B",         // 각 라인에 매칭되는 제품 ID (제품 이름)
-      equipment: ["설비F", "설비G", "설비H", "설비I", "설비J"],
-      info: {
-        "설비F": "샘플 정보 F",
-        "설비G": "샘플 정보 G",
-      },
+      productId: "제품B",
+      equipment: [
+        { facId: "설비D", m_index: 0 },
+        { facId: "설비E", m_index: 1 },
+      ]
     },
   ]);
 }
 
-async function lineOrderExportSample(updatedData) {
-  console.log("📦 샘플 모드: 저장된 설비 순서 및 정보 →", updatedData);
-  return { success: true };
+async function fetchRawReal() {
+  const res = await fetch(`${BASE_URL}/api/equipment/order`);
+  if (!res.ok) throw new Error('서버 응답 오류');
+  return res.json();
 }
 
 /* -----------------------------------------
- * ✅ 실제 API 함수들 (isSampleMode = false)
+ * ✅ Context가 사용하는 형태
+ *   [
+ *     {
+ *       lineId: "line1",
+ *       productId: "...",
+ *       equipment: ["설비A", "설비B", ...],
+ *       info: {}  // 기존 구조 유지
+ *     },
+ *     ...
+ *   ]
  * ----------------------------------------- */
-async function lineOrderImportReal() {
+function toContextShape(rawData) {
+  return rawData.map((item, idx) => ({
+    // 기존 lineOrderContext의 lineId 규칙 유지
+    lineId: item.lineId || `line${idx + 1}`,
+    productId: item.productId || '',
+    equipment: Array.isArray(item.equipment)
+      ? item.equipment.sort((a, b) => a.m_index - b.m_index).map(e => e.facId)
+      : [],
+    info: {}, // API에 info가 있으면 추가로 매핑하세요
+  }));
+}
+
+/* -----------------------------------------
+ * ✅ Raw API로 보내는 형태
+ * ----------------------------------------- */
+function toApiShape(contextData) {
+  return contextData.map(({ productId, equipment }) => ({
+    productId,
+    equipment: equipment.map((facId, idx) => ({ facId, m_index: idx })),
+  }));
+}
+
+/* -----------------------------------------
+ * ✅ Import (불러오기)
+ * ----------------------------------------- */
+export async function lineOrderImportSample() {
+  const raw = await fetchRawSample();
+  return toContextShape(raw);
+}
+
+export async function lineOrderImportReal() {
   try {
-    const res = await fetch(`${BASE_URL}/api/equipment/order`);
-    if (!res.ok) throw new Error("서버 응답 오류");
-    // 서버에서 lineId, productId, equipment, info 포함된 JSON 반환
-    return await res.json();
+    const raw = await fetchRawReal();
+    return toContextShape(raw);
   } catch (err) {
-    console.error("🚨 실서버 설비 순서 불러오기 실패:", err);
+    console.error('🚨 실서버 설비 순서 불러오기 실패:', err);
     return [];
   }
 }
 
-async function lineOrderExportReal(updatedData) {
+/* -----------------------------------------
+ * ✅ Export (저장)
+ * ----------------------------------------- */
+export async function lineOrderExportSample(contextData) {
+  const apiBody = toApiShape(contextData);
+  console.log('📦 [샘플 모드] API로 전송할 데이터 →', apiBody);
+  return { success: true };
+}
+
+export async function lineOrderExportReal(contextData) {
+  const apiBody = toApiShape(contextData);
   try {
     const res = await fetch(`${BASE_URL}/api/equipment/order`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(apiBody),
     });
-    if (!res.ok) throw new Error("전송 실패");
+    if (!res.ok) throw new Error('전송 실패');
     return await res.json();
   } catch (err) {
-    console.error("🚨 실서버 설비 순서 전송 실패:", err);
+    console.error('🚨 실서버 설비 순서 전송 실패:', err);
     return { success: false };
   }
 }
@@ -78,6 +130,7 @@ async function lineOrderExportReal(updatedData) {
 export const lineOrderImportApi = isSampleMode
   ? lineOrderImportSample
   : lineOrderImportReal;
+
 export const lineOrderExportApi = isSampleMode
   ? lineOrderExportSample
   : lineOrderExportReal;
