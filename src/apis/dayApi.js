@@ -1,12 +1,12 @@
 // 📁 src/apis/monthlyPowerApi.js
-// ✅ 월별 전력 사용량 데이터 (샘플 vs 실서버 자동 전환)
+// ✅ 월별 전력 사용량 데이터 (샘플 vs 실서버 런타임 전환)
 
 import axios from "axios";
 
 // ✅ 환경 변수에서 API 주소 불러오기
 const BASE_URL = 'https://api.sensor-tive.com';
 
-// ✅ 샘플 모드 여부
+// ✅ 기본 샘플 모드 여부 (모듈 로딩 시 기본값)
 const isSampleMode = true;
 
 /* ---------------------------------------------
@@ -67,8 +67,14 @@ async function fetchMonthlyDataReal() {
 }
 
 /* ---------------------------------------------
- * ✅ export (샘플 / 실서버 자동 전환)
+ * ✅ export: 런타임 분기용 함수
  * --------------------------------------------- */
-export const fetchMonthlyData = isSampleMode
-  ? fetchMonthlyDataSample
-  : fetchMonthlyDataReal;
+/**
+ * @param {boolean} useSample  true→샘플 데이터, false→실서버 데이터
+ * @returns {Promise<Array<{date: string, power: number, price: number, weekday: string}>>}
+ */
+export function fetchMonthlyData(useSample = isSampleMode) {
+  return useSample
+    ? fetchMonthlyDataSample()
+    : fetchMonthlyDataReal();
+}

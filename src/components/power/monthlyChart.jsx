@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { usePowerChart } from "../../contexts/PowerChartContext";
+import { usePowerChart } from "../../contexts/powerChartContext";
 
 function getWeekNumber(dateStr) {
   const day = parseInt(dateStr.slice(8, 10), 10);

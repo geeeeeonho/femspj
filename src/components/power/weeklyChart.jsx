@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { usePowerChart } from "../../contexts/PowerChartContext";
+import { usePowerChart } from "../../contexts/powerChartContext";
 
 // MM/DD 변환 함수, /는 2pt 작게
 function MMDDwithSmallSlash(dateStr) {

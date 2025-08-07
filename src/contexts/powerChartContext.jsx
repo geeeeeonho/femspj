@@ -1,3 +1,4 @@
+// 📁 src/contexts/powerChartContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
 import { fetchMonthlyData } from "../apis/dayApi";
 
@@ -9,24 +10,23 @@ export const PowerChartProvider = ({ children }) => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    // 샘플데이터: true, 실제데이터: false
-    fetchMonthlyData(true).then((data) => {
-      setMonthlyData(data);
+    fetchMonthlyData()
+      .then((data) => {
+        setMonthlyData(data);
 
-      const totalP = data.reduce((sum, item) => sum + item.power, 0);
-      const totalW = data.reduce((sum, item) => sum + item.price, 0);
+        const totalP = data.reduce((sum, item) => sum + item.power, 0);
+        const totalW = data.reduce((sum, item) => sum + item.price, 0);
 
-      setTotalPower(totalP);
-      setTotalPrice(totalW);
-    });
-
-    // fetchMonthlyData(false).then(...)  // 실제 연동 시 사용
+        setTotalPower(totalP);
+        setTotalPrice(totalW);
+      })
+      .catch((err) => {
+        console.error("월별 데이터 로드 실패:", err);
+      });
   }, []);
 
   return (
-    <PowerChartContext.Provider
-      value={{ monthlyData, totalPower, totalPrice }}
-    >
+    <PowerChartContext.Provider value={{ monthlyData, totalPower, totalPrice }}>
       {children}
     </PowerChartContext.Provider>
   );
