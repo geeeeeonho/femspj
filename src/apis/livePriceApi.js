@@ -1,13 +1,9 @@
 // 📁 src/apis/livePriceApi.js
 // 설명: 실시간 전력 요금 API (샘플 vs 실서버 자동 전환)
 
-import axios from "axios";
+import { http, isSample } from "./http";
 
-// ✅ 환경 변수에서 API 주소 불러오기
-const BASE_URL = 'https://api.sensor-tive.com';
-
-// ✅ 샘플 모드 설정
-const isSampleMode = true;
+const useSample = isSample();
 
 /* -------------------------------
  * ✅ 샘플 데이터 함수
@@ -24,11 +20,13 @@ async function fetchLivePriceSample() {
  * ✅ 실제 API 함수
  * ------------------------------- */
 async function fetchLivePriceReal() {
-  const res = await axios.get(`${BASE_URL}/api/live/price`);
+  const res = await http.get("/api/live/price");
   return res.data;
 }
 
 /* -------------------------------
  * ✅ export: 자동 분기
  * ------------------------------- */
-export const fetchLivePrice = isSampleMode ? fetchLivePriceSample : fetchLivePriceReal;
+export const fetchLivePrice = useSample
+  ? fetchLivePriceSample
+  : fetchLivePriceReal;

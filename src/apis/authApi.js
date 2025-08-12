@@ -1,15 +1,18 @@
 // 📁 src/apis/authApi.js
+import { http, isSample } from "./http";   // ✅ http.js의 스위치를 가져옴
 
-import axios from "axios";
+const useSample = isSample();              // ✅ 샘플 모드 중앙 제어(여기선 읽기만)
 
-const BASE_URL = 'https://api.sensor-tive.com';
+/* 통일된 에러 메시지 */
+const toMsg = (err) => {
+  if (err?.code === "ECONNABORTED") return "서버 응답이 지연되었습니다.";
+  if (err?.response) return `${err.response.status} ${err.response.statusText}`;
+  return "서버에 연결할 수 없습니다.";
+};
 
-// ✅ 샘플 모드 여부 (true로 설정 시 아래 mock 사용)
-const isSampleMode = true;
-
-/* -----------------------------
- * ✅ 샘플 모드용 가짜 데이터
- * ----------------------------- */
+/* =========================
+   샘플 모드 (테스트용)
+========================= */
 const mockUser = {
   id: "sample-user-001",
   name: "샘플 사용자",
@@ -17,19 +20,11 @@ const mockUser = {
   token: "sample-jwt-token",
 };
 
-// ✅ 샘플 로그인
 async function loginMock(email, password) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (email === "123@mail.com" && password === "123") {
-        resolve({
-          token: mockUser.token,
-          user: {
-            id: mockUser.id,
-            name: mockUser.name,
-            email: mockUser.email,
-          },
-        });
+        resolve({ success: true, token: mockUser.token, user: mockUser });
       } else {
         reject(new Error("❌ 샘플 로그인 실패: 이메일 또는 비밀번호 불일치"));
       }
@@ -37,78 +32,78 @@ async function loginMock(email, password) {
   });
 }
 
-// ✅ 샘플 회원가입 (항상 성공으로 처리)
 async function registerMock({ email, password, name }) {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log("🧪 샘플 회원가입:", { email, password, name });
-      resolve({ success: true });
-    }, 300);
+    setTimeout(() => resolve({ success: true }), 300);
   });
 }
 
-// ✅ 샘플 프로필 조회
-async function fetchMyProfileMock(token) {
+async function fetchMyProfileMock() {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id: mockUser.id,
-        name: mockUser.name,
-        email: mockUser.email,
-      });
-    }, 300);
+    setTimeout(
+      () => resolve({ id: mockUser.id, name: mockUser.name, email: mockUser.email }),
+      300
+    );
   });
 }
 
-// ✅ 샘플 로그아웃
-async function logoutMock(token) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true });
-    }, 200);
-  });
+async function logoutMock() {
+  return new Promise((resolve) => setTimeout(() => resolve({ success: true }), 200));
 }
 
-/* -----------------------------
- * ✅ 실제 API 함수들 (운영용)
- * ----------------------------- */
-
+/* =========================
+   실서버 API (http.js baseURL = /auth 권장)
+========================= */
 async function loginReal(email, password) {
-  const res = await axios.post(`${BASE_URL}/auth/login`, { email, password });
-  return res.data;
+  try {
+    const { data } = await http.post("/login", { email, password });
+    const token = data?.token || data?.accessToken;
+    const user  = data?.user || null;
+
+    if (!token) return { success: false, message: "토큰이 없습니다." };
+
+    localStorage.setItem("token", token);
+    if (user) localStorage.setItem("user", JSON.stringify(user));
+
+    return { success: true, token, user };
+  } catch (e) {
+    return { success: false, message: toMsg(e) };
+  }
 }
 
 async function registerReal({ company, name, phone, email, password, authAlarm }) {
-  const res = await axios.post(`${BASE_URL}/auth/register`, {
-    company,
-    name,
-    phone,
-    email,
-    password,
-    authAlarm,
-  });
-  return res.data;
+  try {
+    const { data } = await http.post("/register", {
+      company, name, phone, email, password, authAlarm,
+    });
+    return data;
+  } catch (e) {
+    return { success: false, message: toMsg(e) };
+  }
 }
 
-async function fetchMyProfileReal(token) {
-  const res = await axios.get(`${BASE_URL}/auth/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return res.data;
+async function fetchMyProfileReal() {
+  try {
+    const { data } = await http.get("/me");
+    return data;
+  } catch {
+    return null;
+  }
 }
 
-async function logoutReal(token) {
-  const res = await axios.post(`${BASE_URL}/auth/logout`, {}, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return res.data;
+async function logoutReal() {
+  try {
+    await http.post("/logout");
+  } finally {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }
 }
 
-/* -----------------------------
- * ✅ export 분기
- * ----------------------------- */
-
-export const loginApi = isSampleMode ? loginMock : loginReal;
-export const registerApi = isSampleMode ? registerMock : registerReal;
-export const fetchMyProfileApi = isSampleMode ? fetchMyProfileMock : fetchMyProfileReal;
-export const logoutApi = isSampleMode ? logoutMock : logoutReal;
+/* =========================
+   최종 export (샘플 스위치: http.js의 isSample)
+========================= */
+export const loginApi          = useSample ? loginMock          : loginReal;
+export const registerApi       = useSample ? registerMock       : registerReal;
+export const fetchMyProfileApi = useSample ? fetchMyProfileMock : fetchMyProfileReal;
+export const logoutApi         = useSample ? logoutMock         : logoutReal;

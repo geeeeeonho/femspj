@@ -1,136 +1,100 @@
 // 📁 src/apis/lineOrderApi.js
-// 설명: 샘플 모드 여부에 따라 API의 “raw” 형태 ↔ Context 형태 간 매핑을 담당합니다.
+import { http, isSample } from './http';
 
-// ✅ 환경 변수에서 API 주소 불러오기
-const BASE_URL = 'https://api.sensor-tive.com';
+const useSample = isSample();
 
-// ✅ 샘플 모드 전역 설정 (false로 바꾸면 실서버와 연결됨)
-const isSampleMode = true;
-
-/* -----------------------------------------
- * ✅ Raw API 형태
- *   [
- *     {
- *       productId: "p1",
- *       equipment: [
- *         { facId: "123", m_index: 0 },
- *         { facId: "456", m_index: 1 },
- *         { facId: "789", m_index: 2 }
- *       ]
- *     },
- *     ...
- *   ]
- * ----------------------------------------- */
+/* ---------------- 샘플 데이터 (그대로 두셔도 됨) ---------------- */
 async function fetchRawSample() {
   return Promise.resolve([
     {
-      productId: "제품A",
+      productId: '제품A',
       equipment: [
-        { facId: "설비A", m_index: 0 },
-        { facId: "설비B", m_index: 1 },
-        { facId: "설비C", m_index: 2 },
-      ]
-    },
-    {
-      productId: "제품B",
-      equipment: [
-        { facId: "설비D", m_index: 0 },
-        { facId: "설비E", m_index: 1 },
-      ]
+        { facId: '설비A', m_index: 0 },
+        { facId: '설비B', m_index: 1 },
+      ],
     },
   ]);
 }
 
+/* ---------------- 실제 GET (불러오기) ---------------- */
 async function fetchRawReal() {
-  const res = await fetch(`${BASE_URL}/api/equipment/order`);
-  if (!res.ok) throw new Error('서버 응답 오류');
-  return res.json();
+  // 서버가 /api/equipment/order GET으로 현재 순서를 리턴한다고 가정
+  const res = await http.get('/api/equipment/order');
+  return res.data;
 }
 
-/* -----------------------------------------
- * ✅ Context가 사용하는 형태
- *   [
- *     {
- *       lineId: "line1",
- *       productId: "...",
- *       equipment: ["설비A", "설비B", ...],
- *       info: {}  // 기존 구조 유지
- *     },
- *     ...
- *   ]
- * ----------------------------------------- */
-function toContextShape(rawData) {
-  return rawData.map((item, idx) => ({
-    // 기존 lineOrderContext의 lineId 규칙 유지
+/* ---------------- Context ←→ API 변환 ---------------- */
+function toContextShape(raw) {
+  const arr = Array.isArray(raw) ? raw : [];
+  // raw가 [{product_id, fac_id, m_index}, ...] 형태일 수도 있고,
+  // [{productId, equipment:[{facId, m_index}, ...]}]일 수도 있어서 두 케이스 방어
+  if (arr.length > 0 && 'product_id' in arr[0]) {
+    const byProduct = new Map();
+    arr.forEach((r) => {
+      const p = r.product_id;
+      if (!byProduct.has(p)) byProduct.set(p, []);
+      byProduct.get(p).push({ facId: r.fac_id, m_index: r.m_index });
+    });
+    return Array.from(byProduct.entries()).map(([productId, list], idx) => ({
+      lineId: `line${idx + 1}`,
+      productId,
+      equipment: list.sort((a, b) => a.m_index - b.m_index).map((e) => e.facId),
+      info: {},
+    }));
+  }
+
+  return arr.map((item, idx) => ({
     lineId: item.lineId || `line${idx + 1}`,
     productId: item.productId || '',
     equipment: Array.isArray(item.equipment)
-      ? item.equipment.sort((a, b) => a.m_index - b.m_index).map(e => e.facId)
+      ? item.equipment.sort((a, b) => a.m_index - b.m_index).map((e) => e.facId || e)
       : [],
-    info: {}, // API에 info가 있으면 추가로 매핑하세요
+    info: item.info || {},
   }));
 }
 
-/* -----------------------------------------
- * ✅ Raw API로 보내는 형태
- * ----------------------------------------- */
-function toApiShape(contextData) {
-  return contextData.map(({ productId, equipment }) => ({
-    productId,
-    equipment: equipment.map((facId, idx) => ({ facId, m_index: idx })),
-  }));
+function toApiRows(contextData) {
+  const rows = [];
+  (contextData || []).forEach((line) => {
+    const product = (line?.productId || '').trim();
+    if (!product) return;
+    (line?.equipment || []).forEach((facId, idx) => {
+      const fac = (facId || '').trim();
+      if (!fac) return;
+      rows.push({ product_id: product, fac_id: fac, m_index: idx });
+    });
+  });
+  return rows;
 }
 
-/* -----------------------------------------
- * ✅ Import (불러오기)
- * ----------------------------------------- */
-export async function lineOrderImportSample() {
+/* ---------------- Import / Export API ---------------- */
+async function lineOrderImportSample() {
   const raw = await fetchRawSample();
   return toContextShape(raw);
 }
 
-export async function lineOrderImportReal() {
-  try {
-    const raw = await fetchRawReal();
-    return toContextShape(raw);
-  } catch (err) {
-    console.error('🚨 실서버 설비 순서 불러오기 실패:', err);
-    return [];
-  }
+async function lineOrderImportReal() {
+  const raw = await fetchRawReal();
+  return toContextShape(raw);
 }
 
-/* -----------------------------------------
- * ✅ Export (저장)
- * ----------------------------------------- */
-export async function lineOrderExportSample(contextData) {
-  const apiBody = toApiShape(contextData);
-  console.log('📦 [샘플 모드] API로 전송할 데이터 →', apiBody);
+async function lineOrderExportSample(contextData) {
+  console.log('📦 [샘플 모드] 보낼 데이터', toApiRows(contextData));
   return { success: true };
 }
 
-export async function lineOrderExportReal(contextData) {
-  const apiBody = toApiShape(contextData);
-  try {
-    const res = await fetch(`${BASE_URL}/api/equipment/order`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(apiBody),
-    });
-    if (!res.ok) throw new Error('전송 실패');
-    return await res.json();
-  } catch (err) {
-    console.error('🚨 실서버 설비 순서 전송 실패:', err);
-    return { success: false };
-  }
+async function lineOrderExportReal(contextData) {
+  const rows = toApiRows(contextData);
+  if (rows.length === 0) return { success: false, message: '저장할 데이터가 없습니다.' };
+  const res = await http.post('/api/equipment/order', rows);
+  return res.data;
 }
 
-/* -----------------------------------------
- * ✅ Export: 샘플 모드 여부에 따라 자동 선택
- * ----------------------------------------- */
-export const lineOrderImportApi = isSampleMode
+/* ---------------- 최종 export ---------------- */
+export const lineOrderImportApi = useSample
   ? lineOrderImportSample
   : lineOrderImportReal;
 
-export const lineOrderExportApi = isSampleMode
+export const lineOrderExportApi = useSample
   ? lineOrderExportSample
   : lineOrderExportReal;

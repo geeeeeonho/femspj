@@ -1,80 +1,44 @@
-// 📁 src/apis/monthlyPowerApi.js
-// ✅ 월별 전력 사용량 데이터 (샘플 vs 실서버 런타임 전환)
+// 📁 src/apis/dayApi.js
+import { http, isSample } from "./http";
 
-import axios from "axios";
+// ❌ 로컬 스위치 삭제
+// const isSampleMode = true;
 
-// ✅ 환경 변수에서 API 주소 불러오기
-const BASE_URL = 'https://api.sensor-tive.com';
+/* =========================
+   샘플 데이터 (원하면 수정/삭제)
+========================= */
+const sampleRows = [
+  { date: "2025-08-04", power: 12.3, price: 2450 },
+  { date: "2025-08-05", power:  9.8, price: 1960 },
+  { date: "2025-08-06", power: 11.1, price: 2220 },
+  { date: "2025-08-07", power: 10.5, price: 2100 },
+  { date: "2025-08-08", power: 13.0, price: 2600 },
+  { date: "2025-08-09", power:  8.7, price: 1740 },
+  { date: "2025-08-10", power: 14.2, price: 2840 },
+];
 
-// ✅ 기본 샘플 모드 여부 (모듈 로딩 시 기본값)
-const isSampleMode = true;
-
-/* ---------------------------------------------
- * ✅ 공통: 요일 자동 계산 (한글)
- * --------------------------------------------- */
-function getKoreanWeekday(dateString) {
-  const dayIndex = new Date(dateString).getDay();
-  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
-  return weekdays[dayIndex];
-}
-
-/* ---------------------------------------------
- * ✅ 샘플 데이터 생성 함수
- * --------------------------------------------- */
-function generateSampleMonthlyData() {
-  const data = [];
-  const start = new Date("2024-07-01");
-  const end = new Date("2025-06-30");
-  let date = new Date(start);
-
-  while (date <= end) {
-    const isoDate = date.toISOString().slice(0, 10); // "YYYY-MM-DD"
-    const power = Math.floor(180 + Math.random() * 150); // kWh
-    const price = parseFloat((power * (100 + Math.random() * 20)).toFixed(2)); // 단가 100~120원
-
-    data.push({
-      date: isoDate,
-      power,
-      price,
-      weekday: getKoreanWeekday(isoDate),
-    });
-
-    date.setDate(date.getDate() + 1);
-  }
-
-  return data;
-}
-
-/* ---------------------------------------------
- * ✅ 샘플 fetch 함수 (비동기처럼 사용)
- * --------------------------------------------- */
 async function fetchMonthlyDataSample() {
-  return Promise.resolve(generateSampleMonthlyData());
+  return new Promise((resolve) => setTimeout(() => resolve(sampleRows), 200));
 }
 
-/* ---------------------------------------------
- * ✅ 실제 API fetch 함수 (axios 사용)
- * --------------------------------------------- */
+/* =========================
+   실서버 호출
+   백엔드 /api/power-data/monthly → { success:true, rows:[{date, power}] }
+========================= */
 async function fetchMonthlyDataReal() {
-  const res = await axios.get(`${BASE_URL}/api/power-data/monthly`);
-  const data = res.data;
-
-  return data.map((item) => ({
-    ...item,
-    weekday: item.weekday || getKoreanWeekday(item.date),
-    price: item.price || Math.round(item.power * 110),
+  const { data } = await http.get("/api/power-data/monthly");
+  const rows = data?.rows || data?.data || data || [];
+  return rows.map((r) => ({
+    date: r.date,
+    power: Number(r.power) || 0,
+    price: Number(r.price ?? 0) || 0, // 서버에 price 없으면 0
   }));
 }
 
-/* ---------------------------------------------
- * ✅ export: 런타임 분기용 함수
- * --------------------------------------------- */
-/**
- * @param {boolean} useSample  true→샘플 데이터, false→실서버 데이터
- * @returns {Promise<Array<{date: string, power: number, price: number, weekday: string}>>}
- */
-export function fetchMonthlyData(useSample = isSampleMode) {
-  return useSample
-    ? fetchMonthlyDataSample()
-    : fetchMonthlyDataReal();
+/* =========================
+   export
+   - 인자를 안 주면 http.js의 isSample()을 기본값으로 사용
+========================= */
+export function fetchMonthlyData(useSampleFlag = isSample()) {
+  return useSampleFlag ? fetchMonthlyDataSample() : fetchMonthlyDataReal();
 }

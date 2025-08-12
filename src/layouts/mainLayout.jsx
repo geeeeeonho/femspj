@@ -21,14 +21,14 @@ const overlayItems = [
     label: "종합 분석 및 개선",
     imgSrc: "/images/analysis-page.png",
     description: "이전 데이터를 기반으로 한 종합 분석 결과를 제공합니다.",
-    path: "/analysis"
+    path: "/solution"
   },
   {
     key: "setting",
     label: "사용자 환경 설정",
     imgSrc: "/images/setting-page.png",
     description: "사용자별 알림 및 대시보드 설정을 관리합니다.",
-    path: "/settings"
+    path: "/setting"
   }
 ];
 

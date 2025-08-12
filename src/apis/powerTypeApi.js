@@ -1,12 +1,8 @@
 // 📁 src/apis/powerTypeApi.js
+import { http, isSample } from "./http";
 
-import axios from "axios";
-
-// ✅ 환경 변수에서 API 주소 불러오기
-const BASE_URL = 'https://api.sensor-tive.com';
-
-// ✅ 샘플 전환 변수
-const isSampleMode = true; // true면 mock 사용, false면 실제 서버 사용
+// http.js에서 중앙 제어되는 샘플 플래그
+const useSample = isSample();
 
 // ✅ 샘플 데이터
 const samplePowerType = {
@@ -16,23 +12,19 @@ const samplePowerType = {
 
 // ✅ 전력 유형 불러오기
 export async function fetchPowerType(userId) {
-  if (isSampleMode) {
-    // 💡 mock response
+  if (useSample) {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(samplePowerType);
-      }, 300);
+      setTimeout(() => resolve(samplePowerType), 300);
     });
   } else {
-    // 💡 실제 API 호출
-    const res = await axios.get(`${BASE_URL}/powertype/${userId}`);
+    const res = await http.get(`/api/powertype/${userId}`);
     return res.data;
   }
 }
 
 // ✅ 전력 유형 저장하기
 export async function savePowerType(userId, powerType) {
-  if (isSampleMode) {
+  if (useSample) {
     return new Promise((resolve) => {
       setTimeout(() => {
         console.log("🧪 mock 저장됨:", powerType);
@@ -40,7 +32,7 @@ export async function savePowerType(userId, powerType) {
       }, 300);
     });
   } else {
-    const res = await axios.post(`${BASE_URL}/powertype/${userId}`, powerType);
+    const res = await http.post(`/api/powertype/${userId}`, { powerType });
     return res.data;
   }
 }
