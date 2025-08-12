@@ -15,13 +15,22 @@ export const PowerTypeProvider = ({ children }) => {
   // ✅ 전력 유형 불러오기
   useEffect(() => {
     console.log("🟡 [PowerTypeContext] user:", user);
-    if (!user || !user.id) {
+    // [추가] user 없을 때 localStorage에서 폴백
+    let uid = user?.id;
+    if (!uid) {
+      try {
+        const raw = localStorage.getItem("user");
+        if (raw) uid = JSON.parse(raw)?.id;
+      } catch {}
+    }
+
+    if (!uid) {
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    fetchPowerType(user.id)
+    fetchPowerType(uid)
       .then((data) => {
         console.log("✅ fetchPowerType 응답:", data);
         if (data?.group && data?.type) {
@@ -45,15 +54,38 @@ export const PowerTypeProvider = ({ children }) => {
   };
 
   // ✅ 전력 유형 저장
+  // [수정] 성공/실패를 정확히 전파: 성공 true, 실패 throw
   const save = async () => {
-    if (!user || !user.id) return alert("로그인이 필요합니다.");
+    // 1) 선택값 검증
+    if (!selected.group || !selected.type) {
+      throw new Error("구분과 유형을 모두 선택하세요.");
+    }
+
+    // 2) 로그인/토큰 폴백 (Context가 비어도 요청이 나가도록)
+    let uid = user?.id;
+    if (!uid) {
+      try {
+        const raw = localStorage.getItem("user");
+        if (raw) uid = JSON.parse(raw)?.id;
+      } catch {}
+    }
+    const token = localStorage.getItem("token");
+
+    if (!uid || !token) {
+      // return alert("로그인이 필요합니다."); // [삭제: alert 선출력 금지]
+      throw new Error("로그인이 필요합니다."); // [수정]
+    }
+
+    // 3) 실제 저장 호출
+    setLoading(true);
     try {
-      setLoading(true);
-      await savePowerType(user.id, selected);
-      alert("전력 유형이 저장되었습니다.");
+      const res = await savePowerType(uid, selected); // { success: true } 기대
+      if (!res || res.success !== true) {
+        throw new Error("저장 실패(응답 비정상)");
+      }
+      return true; // 성공
     } catch (err) {
-      console.error("❌ 저장 실패:", err);
-      alert("저장 중 오류가 발생했습니다.");
+      throw err; // 상위에서 alert 처리
     } finally {
       setLoading(false);
     }

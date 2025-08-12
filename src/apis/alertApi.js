@@ -1,46 +1,44 @@
-import axios from "axios";
+// 📁 src/apis/alertApi.js
+import { http, isSample } from "./http";
 
-// ✅ 환경 변수에서 API 주소 불러오기
-const BASE_URL = 'https://api.sensor-tive.com';
-
-// 샘플 모드 여부
-const isSampleMode = true;
-
-// 알림 기능 자체를 켜거나 끌 수 있는 플래그
-const isAlertEnabled = true;
-
-// ✅ 샘플 경고 발생 여부 설정
-const isSampleAlertProblem = false;
+/* -------------------------------------------------
+ * 샘플 모드일 때 경고 발생 여부 on/off
+ * ------------------------------------------------- */
+let _samplePeakAlert = (() => {
+  const ls = localStorage.getItem("samplePeakOn");
+  if (ls != null) return ls === "true";
+  return false; // 기본값: 꺼짐
+})();
+export function isSamplePeakAlertOn() {
+  return _samplePeakAlert === true;
+}
+export function setSamplePeakAlert(v) {
+  _samplePeakAlert = !!v;
+  localStorage.setItem("samplePeakOn", String(_samplePeakAlert));
+}
 
 /* -----------------------------
- * ✅ 샘플 응답
+ * 샘플 응답
  * ----------------------------- */
 async function fetchPeakAlertSample() {
   const now = new Date();
   return {
-    isPeak: isSampleAlertProblem,
-    time: isSampleAlertProblem ? now.toLocaleTimeString("ko-KR") : null,
+    isPeak: _samplePeakAlert,
+    time: _samplePeakAlert ? now.toLocaleTimeString("ko-KR") : null,
   };
 }
 
 /* -----------------------------
- * ✅ 실제 API
+ * 실제 API 호출
  * ----------------------------- */
 async function fetchPeakAlertReal() {
-  const res = await axios.get(`${BASE_URL}/api/alerts/peak`);
-  return res.data;
+  const res = await http.get("/api/alerts/peak");
+  return res?.data ?? { isPeak: false, time: null };
 }
 
 /* -----------------------------
- * ✅ 최종 export
+ * 최종 export
  * ----------------------------- */
-export const fetchPeakAlert = async () => {
-  if (!isAlertEnabled) {
-    return { isPeak: false, time: null };
-  }
-  if (isSampleMode) {
-    return await fetchPeakAlertSample();
-  } else {
-    return await fetchPeakAlertReal();
-  }
-};
+export async function fetchPeakAlert() {
+  return isSample() ? fetchPeakAlertSample() : fetchPeakAlertReal();
+}

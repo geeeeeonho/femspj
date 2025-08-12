@@ -1,21 +1,28 @@
+// 📁 src/contexts/lineOrderContext.jsx
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { lineOrderImportApi, lineOrderExportApi } from '../apis/lineOrderApi';
+import { useAuth } from './authContext';
 
 const LineOrderContext = createContext(null);
 
 export function LineOrderProvider({ children }) {
+  const { isLoggedIn } = useAuth();
   const [lineOrder, setLineOrder] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 초기 및 재요청용 데이터 불러오기
   const fetchLineOrder = useCallback(async () => {
+    if (!isLoggedIn) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const data = await lineOrderImportApi();
-      const normalized = data.map(line => ({
-        lineId: line.lineId,
+      const list = Array.isArray(data) ? data : [];
+      const normalized = list.map((line, i) => ({
+        lineId: line.lineId || `line${i + 1}`,
         productId: line.productId || '',
-        equipment: line.equipment || [],
+        equipment: Array.isArray(line.equipment) ? line.equipment : [],
         info: line.info || {},
       }));
       setLineOrder(normalized);
@@ -24,19 +31,20 @@ export function LineOrderProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isLoggedIn]);
 
-  useEffect(() => {
-    fetchLineOrder();
-  }, [fetchLineOrder]);
+  useEffect(() => { fetchLineOrder(); }, [fetchLineOrder]);
 
-  // 저장
   const saveLineOrder = useCallback(async () => {
-    const res = await lineOrderExportApi(lineOrder);
-    return res;
+    try {
+      return await lineOrderExportApi(lineOrder);
+    } catch (e) {
+      console.error('🚨 설비 순서 저장 실패:', e);
+      return { success: false };
+    }
   }, [lineOrder]);
 
-  // 라인 추가/삭제
+  // ===== 편집 함수들 다시 제공 =====
   const addLine = useCallback(() => {
     setLineOrder(prev => [
       ...prev,
@@ -48,7 +56,6 @@ export function LineOrderProvider({ children }) {
     setLineOrder(prev => prev.filter((_, idx) => idx !== lineIndex));
   }, []);
 
-  // 제품 ID 업데이트
   const updateProductId = useCallback((lineIndex, newProductId) => {
     setLineOrder(prev => {
       const lines = [...prev];
@@ -57,7 +64,6 @@ export function LineOrderProvider({ children }) {
     });
   }, []);
 
-  // 설비 순서 이동
   const moveEquip = useCallback((lineIndex, fromIdx, toIdx) => {
     setLineOrder(prev => {
       const lines = [...prev];
@@ -70,7 +76,6 @@ export function LineOrderProvider({ children }) {
     });
   }, []);
 
-  // 설비 이름 변경
   const renameEquipment = useCallback((lineIndex, eqIndex, newName) => {
     setLineOrder(prev => {
       const lines = [...prev];
@@ -88,7 +93,6 @@ export function LineOrderProvider({ children }) {
     });
   }, []);
 
-  // 설비 추가
   const addEquipment = useCallback(lineIndex => {
     setLineOrder(prev => {
       const lines = [...prev];
@@ -102,7 +106,6 @@ export function LineOrderProvider({ children }) {
     });
   }, []);
 
-  // 설비 삭제
   const deleteEquipment = useCallback((lineIndex, eqIndex) => {
     setLineOrder(prev => {
       const lines = [...prev];
@@ -116,7 +119,6 @@ export function LineOrderProvider({ children }) {
     });
   }, []);
 
-  // 설비 추가 정보 업데이트
   const updateEquipmentInfo = useCallback((lineIndex, eqName, newInfo) => {
     setLineOrder(prev => {
       const lines = [...prev];
@@ -134,6 +136,7 @@ export function LineOrderProvider({ children }) {
         loading,
         fetchLineOrder,
         saveLineOrder,
+        // 편집용 함수들
         addLine,
         deleteLine,
         updateProductId,
@@ -150,7 +153,7 @@ export function LineOrderProvider({ children }) {
 }
 
 export function useLineOrder() {
-  const context = useContext(LineOrderContext);
-  if (!context) throw new Error('useLineOrder must be used within LineOrderProvider');
-  return context;
+  const ctx = useContext(LineOrderContext);
+  if (!ctx) throw new Error('useLineOrder must be used within LineOrderProvider');
+  return ctx;
 }
