@@ -1,12 +1,9 @@
 // 📁 src/apis/dayApi.js
 import { http, isSample } from "./http";
 
-// ❌ 로컬 스위치 삭제
-// const isSampleMode = true;
-
 /* =========================
-   샘플 데이터 (원하면 수정/삭제)
-========================= */
+ * 샘플 데이터 (원하면 수정/삭제)
+ * ========================= */
 const sampleRows = [
   { date: "2025-08-04", power: 12.3, price: 2450 },
   { date: "2025-08-05", power:  9.8, price: 1960 },
@@ -17,28 +14,49 @@ const sampleRows = [
   { date: "2025-08-10", power: 14.2, price: 2840 },
 ];
 
-async function fetchMonthlyDataSample() {
-  return new Promise((resolve) => setTimeout(() => resolve(sampleRows), 200));
+/* =========================
+ * 날짜 문자열 → YYYY-MM-DD 정규화
+ *  - '2025-08-04T00:00:00Z' → '2025-08-04'
+ *  - '2025/08/04' → '2025-08-04'
+ *  - '2025.08.04' → '2025-08-04'
+ * ========================= */
+function toYMD(input) {
+  if (!input) return "";
+  const s = String(input).slice(0, 10).replace(/[./]/g, "-");
+  const [y, m, d] = s.split("-");
+  if (!y || !m || !d) return "";
+  const mm = String(parseInt(m, 10)).padStart(2, "0");
+  const dd = String(parseInt(d, 10)).padStart(2, "0");
+  return `${y}-${mm}-${dd}`;
+}
+
+function normalizeRow(r) {
+  return {
+    date: toYMD(r.date),
+    power: Number(r.power) || 0,
+    price: Number(r.price ?? 0) || 0,
+  };
 }
 
 /* =========================
-   실서버 호출
-   백엔드 /api/power-data/monthly → { success:true, rows:[{date, power}] }
-========================= */
+ * 샘플 / 실제 API
+ * ========================= */
+async function fetchMonthlyDataSample() {
+  // 딜레이가 필요하면 setTimeout 래핑해서 사용 가능
+  return sampleRows.map(normalizeRow);
+}
+
 async function fetchMonthlyDataReal() {
+  // 백엔드 응답 형태가 rows/data 등으로 다를 수 있어 안전 분기
   const { data } = await http.get("/api/power-data/monthly");
   const rows = data?.rows || data?.data || data || [];
-  return rows.map((r) => ({
-    date: r.date,
-    power: Number(r.power) || 0,
-    price: Number(r.price ?? 0) || 0, // 서버에 price 없으면 0
-  }));
+  return rows.map(normalizeRow);
 }
 
 /* =========================
-   export
-   - 인자를 안 주면 http.js의 isSample()을 기본값으로 사용
-========================= */
+ * export
+ * - 인자를 안 주면 http.js의 isSample()을 기본값으로 사용
+ * ========================= */
 export function fetchMonthlyData(useSampleFlag = isSample()) {
   return useSampleFlag ? fetchMonthlyDataSample() : fetchMonthlyDataReal();
 }
