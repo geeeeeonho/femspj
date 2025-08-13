@@ -1,4 +1,3 @@
-// 📁 src/contexts/authContext.jsx
 /*
   설명:
   - 로그인/회원가입 상태를 전역에서 관리합니다.
@@ -19,44 +18,78 @@ import {
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  // ✅ 초기 토큰 정규화 ("undefined" 문자열 방지)
+  const [token, setToken] = useState(() => {
+    const t = localStorage.getItem("token");
+    return t && t !== "undefined" ? t : null;
+  });
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(!!token);
 
-  const isLoggedIn = !!user && !!token; // ✅ 로그인 상태 여부 계산
+  // ✅ 토큰만 있으면 로그인으로 간주 (프로필 로딩 여부는 별도)
+  const isLoggedIn = !!token;
+  const hasProfile = !!user;
 
-  // 최초 로딩 시 토큰이 있으면 사용자 정보 조회
+  // 공용 정리 함수
+  const clearSession = () => {
+    setToken(null);
+    setUser(null);
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    } catch (_) {}
+  };
+
+  // 최초 로딩: 토큰 있으면 프로필 조회
   useEffect(() => {
-    if (token) {
-      setLoading(true);
-      fetchMyProfileApi(token)
-        .then((data) => setUser(data))
-        .catch(() => {
-          setToken(null);
-          setUser(null);
-          localStorage.removeItem("token");
-        })
-        .finally(() => setLoading(false));
+    if (!token) {
+      setLoading(false);
+      return;
     }
+    if (token === "undefined") {
+      clearSession();
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    // fetchMyProfileApi는 http 인터셉터로 토큰을 자동 부착하므로 인자 불필요
+    fetchMyProfileApi()
+      .then((data) => setUser(data))
+      .catch(() => {
+        // 토큰이 유효하지 않으면 세션 정리
+        clearSession();
+      })
+      .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   // 로그인
   const login = async (email, password) => {
-    const data = await loginApi(email, password);
-    setToken(data.token);
-    setUser(data.user);
-    localStorage.setItem("token", data.token);
-    return data;
+    const res = await loginApi(email, password);
+    if (res?.success) {
+      const t = res.token;
+      const u = res.user ?? null;
+      setToken(t);
+      setUser(u);
+      try {
+        localStorage.setItem("token", t);
+        if (u) localStorage.setItem("user", JSON.stringify(u));
+      } catch (_) {}
+      return { success: true, token: t, user: u };
+    } else {
+      // 실패 시 세션 보존하지 않음
+      clearSession();
+      return { success: false, message: res?.message || "로그인에 실패했습니다." };
+    }
   };
 
   // 로그아웃
   const logout = async () => {
     try {
-      await logoutApi(token);
+      await logoutApi(); // 인자 불필요
     } catch (_) {}
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem("token");
+    clearSession();
   };
 
   // 회원가입
@@ -82,9 +115,14 @@ export function AuthProvider({ children }) {
   // 내 정보 수동 재조회
   const fetchMyProfile = async () => {
     if (!token) return null;
-    const me = await fetchMyProfileApi(token);
-    setUser(me);
-    return me;
+    try {
+      const me = await fetchMyProfileApi();
+      setUser(me);
+      return me;
+    } catch (_) {
+      clearSession();
+      return null;
+    }
   };
 
   return (
@@ -94,6 +132,7 @@ export function AuthProvider({ children }) {
         user,
         loading,
         isLoggedIn,
+        hasProfile, // (선택) 필요 시 사용
         login,
         logout,
         register,

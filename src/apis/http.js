@@ -1,4 +1,3 @@
-// 📁 src/apis/http.js
 import axios from "axios";
 
 /* -------------------------------------------------
@@ -63,14 +62,34 @@ http.interceptors.request.use((cfg) => {
 /* -------------------------------------------------
  * 5) 응답 인터셉터: 401 처리
  *    - 샘플 모드일 때는 세션 정리/리다이렉트 하지 않음
+ *    - 🔧 변경: 로그인/회원가입 시도에서 발생한 401은 리다이렉트하지 않고 그대로 throw
+ *    - 🔧 변경: 토큰이 있을 때만 보호 API 401에서 /auth로 이동
  * ------------------------------------------------- */
 http.interceptors.response.use(
   (res) => res,
   (e) => {
     const status = e?.response?.status;
-    const here = (typeof window !== "undefined" && window.location?.pathname) || "";
+    const cfg = e?.config ?? {};
+    const method = (cfg.method || "").toLowerCase();
+    const url = cfg.url || "";
+    const here =
+      (typeof window !== "undefined" && window.location?.pathname) || "";
+    const hasToken = !!localStorage.getItem("token");
 
-    if (!isSample() && status === 401 && !here.startsWith("/auth")) {
+    // 🔎 로그인/회원가입 시도 여부 판단 (POST /auth/login, /auth/signup 등)
+    const isAuthAttempt =
+      method === "post" &&
+      (url.startsWith("/auth/login") ||
+        url.startsWith("/auth/signup") ||
+        (url.startsWith("/auth") && /login|signup/i.test(url)));
+
+    if (
+      !isSample() &&
+      status === 401 &&
+      hasToken &&                 // 🔧 토큰 있을 때만 보호 API 만료 처리
+      !here.startsWith("/auth") &&
+      !isAuthAttempt              // 🔧 로그인 시도 401은 리다이렉트 금지
+    ) {
       try {
         localStorage.removeItem("token");
         localStorage.removeItem("user");

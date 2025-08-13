@@ -1,12 +1,9 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { fetchMonthlyData } from "../apis/dayApi"; // ← 리눅스 대소문자/경로 주의
+// 📁 src/contexts/powerChartContext.jsx
+import { createContext, useContext, useEffect, useState } from "react";
+import { fetchMonthlyData } from "../apis/dayApi";
 import { useAuth } from "./authContext";
 
-const PowerChartContext = createContext();
-
-/* =========================
- * 날짜/요일 유틸
- * ========================= */
+/* 날짜/요일 유틸 */
 const WEEK_KO = ["일", "월", "화", "수", "목", "금", "토"];
 
 function toYMD(input) {
@@ -24,14 +21,13 @@ function getKoreanWeekday(v) {
   if (!s) return "";
   const [y, m, d] = s.split("-").map((x) => parseInt(x, 10));
   if (!y || !m || !d) return "";
-  const dt = new Date(y, m - 1, d); // Asia/Seoul 로컬 기준
+  const dt = new Date(y, m - 1, d); // 로컬(KST)
   return WEEK_KO[dt.getDay()];
 }
 
-/* =========================
- * Provider
- * ========================= */
-export const PowerChartProvider = ({ children }) => {
+export const PowerChartContext = createContext(null);
+
+export function PowerChartProvider({ children }) {
   const { isLoggedIn } = useAuth?.() ?? { isLoggedIn: true };
   const [monthlyData, setMonthlyData] = useState([]);
   const [totalPower, setTotalPower] = useState(0);
@@ -44,7 +40,6 @@ export const PowerChartProvider = ({ children }) => {
       setTotalPrice(0);
       return;
     }
-
     fetchMonthlyData()
       .then((rows) => {
         const safe = Array.isArray(rows)
@@ -53,23 +48,27 @@ export const PowerChartProvider = ({ children }) => {
           ? rows.data
           : [];
 
-        // ✅ 날짜 정규화 + 파생값 주입(weekday)
+        // 날짜 정규화 + 요일 파생
         const enriched = safe.map((r) => {
           const date = toYMD(r?.date);
           const power = Number(r?.power) || 0;
           const price = Number(r?.price ?? 0) || 0;
-          return {
-            ...r,
-            date,
-            power,
-            price,
-            weekday: getKoreanWeekday(date), // ← 요일 필드 주입
-          };
+          return { ...r, date, power, price, weekday: getKoreanWeekday(date) };
         });
 
-        setMonthlyData(enriched);
-        setTotalPower(enriched.reduce((acc, it) => acc + it.power, 0));
-        setTotalPrice(enriched.reduce((acc, it) => acc + it.price, 0));
+        // 같은 날짜 중복 시 마지막 레코드 우선
+        const byDate = new Map();
+        for (const it of enriched) if (it.date) byDate.set(it.date, it);
+        const deduped = Array.from(byDate.values());
+
+        // 최종 정렬(오래된 → 최신)
+        const sorted = deduped.sort((a, b) =>
+          a.date < b.date ? -1 : a.date > b.date ? 1 : 0
+        );
+
+        setMonthlyData(sorted);
+        setTotalPower(sorted.reduce((acc, it) => acc + it.power, 0));
+        setTotalPrice(sorted.reduce((acc, it) => acc + it.price, 0));
       })
       .catch((err) => {
         console.error("월별 데이터 로드 실패:", err);
@@ -90,6 +89,12 @@ export const PowerChartProvider = ({ children }) => {
       {children}
     </PowerChartContext.Provider>
   );
-};
+}
 
-export const usePowerChart = () => useContext(PowerChartContext);
+export function usePowerChart() {
+  const ctx = useContext(PowerChartContext);
+  if (!ctx) throw new Error("usePowerChart must be used within PowerChartProvider");
+  return ctx;
+}
+
+export default PowerChartProvider;

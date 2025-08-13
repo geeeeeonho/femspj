@@ -6,9 +6,6 @@
 
 import { http, isSample } from "./http";
 
-// 런타임 샘플모드 플래그
-const useSample = isSample();
-
 /* =========================
  * 샘플 모드 (테스트용)
  * ========================= */
@@ -32,12 +29,14 @@ async function loginMock(email, password) {
     localStorage.setItem("user", JSON.stringify(user));
     return { success: true, token, user };
   }
-  return { success: false, message: "❌ 샘플: 이메일 또는 비밀번호가 올바르지 않습니다." };
+  // 🔧 "샘플" 문구 제거
+  return { success: false, message: "❌ 이메일 또는 비밀번호가 올바르지 않습니다." };
 }
 
 async function registerMock(info) {
   await delay(300);
-  return { success: true, message: "✅ 샘플: 회원가입 성공", user: { ...mockUser, ...info } };
+  // 🔧 "샘플" 문구 제거
+  return { success: true, message: "✅ 회원가입 성공", user: { ...mockUser, ...info } };
 }
 
 async function fetchMyProfileMock() {
@@ -73,24 +72,38 @@ async function loginReal(email, password) {
 
     return { success: true, token, user };
   } catch (e) {
+    // ✅ 서버 메시지 우선, 없으면 상태별 기본 문구
+    const serverMsg = e?.response?.data?.message;
     const status = e?.response?.status;
-    const text = e?.response?.statusText;
-    const msg = status ? `${status} ${text}` : "서버에 연결할 수 없습니다.";
-    return { success: false, message: msg };
+    const fallback =
+      status === 401
+        ? "이메일 또는 비밀번호가 올바르지 않습니다."
+        : "서버에 연결할 수 없습니다.";
+    return { success: false, message: serverMsg || fallback };
   }
 }
 
 async function registerReal(info) {
-  // ✅ /auth/register
-  const { data } = await http.post("/auth/register", info);
-  return data;
+  try {
+    // ✅ /auth/register
+    const { data } = await http.post("/auth/register", info);
+    return { success: true, ...data };
+  } catch (e) {
+    const msg = e?.response?.data?.message || "회원가입에 실패했습니다.";
+    return { success: false, message: msg };
+  }
 }
 
 async function fetchMyProfileReal() {
-  // ✅ /auth/me
-  const { data } = await http.get("/auth/me");
-  // 백엔드가 { user: {...} } 또는 바로 유저객체를 줄 수도 있으므로 양쪽 모두 수용
-  return data?.user ?? data;
+  try {
+    // ✅ /auth/me
+    const { data } = await http.get("/auth/me");
+    // 백엔드가 { user: {...} } 또는 바로 유저객체를 줄 수도 있으므로 양쪽 모두 수용
+    return data?.user ?? data;
+  } catch (e) {
+    const msg = e?.response?.data?.message || "프로필을 불러오지 못했습니다.";
+    throw new Error(msg);
+  }
 }
 
 async function logoutReal() {
@@ -105,9 +118,16 @@ async function logoutReal() {
 }
 
 /* =========================
- * Export (샘플/리얼 자동 분기)
+ * Export (샘플/리얼 자동 분기: 매 호출마다 isSample() 평가)
  * ========================= */
-export const loginApi = useSample ? loginMock : loginReal;
-export const registerApi = useSample ? registerMock : registerReal;
-export const fetchMyProfileApi = useSample ? fetchMyProfileMock : fetchMyProfileReal;
-export const logoutApi = useSample ? logoutMock : logoutReal;
+export const loginApi = (email, password) =>
+  isSample() ? loginMock(email, password) : loginReal(email, password);
+
+export const registerApi = (info) =>
+  isSample() ? registerMock(info) : registerReal(info);
+
+export const fetchMyProfileApi = () =>
+  isSample() ? fetchMyProfileMock() : fetchMyProfileReal();
+
+export const logoutApi = () =>
+  isSample() ? logoutMock() : logoutReal();

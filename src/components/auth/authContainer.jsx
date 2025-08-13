@@ -2,11 +2,11 @@
 /*
   설명:
   - 로그인/회원가입 화면을 전환하며 보여주는 컨테이너입니다.
-  - 로그인 성공 시 '/'로 이동합니다.
+  - 로그인 성공 시 직전 목적지(state.from) 또는 '/'로 이동합니다.
 */
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
 import LoginInputComponent from "./loginInput";
 import SignupInputComponent from "./signupInput";
@@ -14,31 +14,55 @@ import SignupInputComponent from "./signupInput";
 function AuthContainer() {
   const [isSignup, setIsSignup] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, register } = useAuth();
 
-  // ✅ 로그인 처리
+  const from = location.state?.from?.pathname || "/";
+
+  // ✅ 로그인 처리 (반환값 success 체크)
   const handleLogin = async (email, password) => {
     setError("");
+    setSubmitting(true);
     try {
-      await login(email, password);
-      navigate("/"); // 메인 페이지로 이동
+      const res = await login(email, password); // { success, token?, user?, message? }
+      if (!res?.success) {
+        setError(res?.message || "이메일 또는 비밀번호가 올바르지 않습니다.");
+        return;
+      }
+      navigate(from, { replace: true });
     } catch (err) {
-      console.error("로그인 실패:", err);
-      setError("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
+      const msg =
+        err?.message ||
+        err?.response?.data?.message ||
+        "로그인에 실패했습니다. 다시 시도해 주세요.";
+      setError(msg);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  // ✅ 회원가입 처리
+  // ✅ 회원가입 처리 (반환값 success 체크)
   const handleSignup = async (formData) => {
     setError("");
+    setSubmitting(true);
     try {
-      await register(formData); // {company, name, phone, email, password}
-      alert("회원가입이 완료되었습니다. 로그인 해주세요.");
+      const res = await register(formData); // { success, message?, user? } 형태 가정
+      if (!res?.success) {
+        setError(res?.message || "회원가입에 실패했습니다. 입력 내용을 확인해 주세요.");
+        return;
+      }
+      alert("회원가입이 완료되었습니다. 로그인해 주세요.");
       setIsSignup(false); // 로그인 폼으로 전환
     } catch (err) {
-      console.error("회원가입 실패:", err);
-      setError("회원가입에 실패했습니다. 입력한 정보를 다시 확인해주세요.");
+      const msg =
+        err?.message ||
+        err?.response?.data?.message ||
+        "회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+      setError(msg);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -51,22 +75,24 @@ function AuthContainer() {
 
       {isSignup ? (
         <>
-          <SignupInputComponent onSignup={handleSignup} />
+          <SignupInputComponent onSignup={handleSignup} disabled={submitting} />
           {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
           <button
-            className="mt-4 text-blue-600 underline text-sm"
+            className="mt-4 text-blue-600 underline text-sm disabled:opacity-60"
             onClick={() => setIsSignup(false)}
+            disabled={submitting}
           >
             계정이 있으신가요? 로그인하기
           </button>
         </>
       ) : (
         <>
-          <LoginInputComponent onLogin={handleLogin} />
+          <LoginInputComponent onLogin={handleLogin} disabled={submitting} />
           {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
           <button
-            className="mt-4 text-blue-600 underline text-sm"
+            className="mt-4 text-blue-600 underline text-sm disabled:opacity-60"
             onClick={() => setIsSignup(true)}
+            disabled={submitting}
           >
             계정이 없으신가요? 회원가입 하기
           </button>
