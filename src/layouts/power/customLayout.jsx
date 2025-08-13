@@ -1,7 +1,7 @@
 import CustomChartUpComponent from "../../components/power/customChartUp";
 import CustomChartDownComponent from "../../components/power/customChartDown";
 import { useState } from "react";
-import { usePowerChart } from "../../contexts/PowerChartContext";
+import { usePowerChart } from "../../contexts/powerChartContext";
 
 function CustomLayoutComponent() {
   const { monthlyData } = usePowerChart();

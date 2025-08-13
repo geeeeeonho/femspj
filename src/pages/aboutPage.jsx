@@ -42,7 +42,7 @@ function AboutPage() {
       <div className="bg-white rounded shadow p-6">
         <div className="flex items-center mb-4">
           <img
-            src="/icons/analysis.png"
+            src="/icons/solution.png"
             alt="종합 분석 아이콘"
             className="w-10 h-10 mr-3"
           />
@@ -59,7 +59,7 @@ function AboutPage() {
       <div className="bg-white rounded shadow p-6">
         <div className="flex items-center mb-4">
           <img
-            src="/icons/settings.png"
+            src="/icons/setting.png"
             alt="사용자 설정 아이콘"
             className="w-10 h-10 mr-3"
           />

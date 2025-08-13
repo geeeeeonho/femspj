@@ -1,6 +1,6 @@
 // 📁 src/router/root.jsx
 
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import BasicLayout from "../layouts/basicLayout";
 import RouteProtect from "./routeProtect";

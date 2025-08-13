@@ -2,19 +2,32 @@
 import axios from "axios";
 
 /* -------------------------------------------------
- * 1) 샘플 모드 중앙 관리
- *    ✅ 여기에서 true / false 변경해서 전체 API 샘플모드 전환
- *    - true  → 모든 API에서 샘플 데이터 사용
- *    - false → 서버 API 호출
+ * 1) 샘플 모드 중앙 관리 (http만 책임)
+ *    - true  → 모든 API가 샘플 데이터 사용
+ *    - false → 실제 서버 호출
+ *    - 우선순위: localStorage('sampleMode') → VITE_SAMPLE_MODE → 기본 true(개발 편의)
  * ------------------------------------------------- */
-let _sampleMode = true;  // ←←← 여기서 true/false로 변경!
+const LS_SAMPLE_KEY = "sampleMode";
+
+let _sampleMode = (() => {
+  try {
+    const saved = localStorage.getItem(LS_SAMPLE_KEY);
+    if (saved != null) return saved === "true";
+  } catch (_) {}
+  const env = import.meta.env?.VITE_SAMPLE_MODE;
+  if (typeof env !== "undefined") return String(env) === "true";
+  return true; //<--- 여기에서 true:샘플 | false:서버
+})();
 
 export function isSample() {
   return _sampleMode === true;
 }
+
 export function setSampleMode(v) {
   _sampleMode = !!v;
-  localStorage.setItem("sampleMode", String(_sampleMode));
+  try {
+    localStorage.setItem(LS_SAMPLE_KEY, String(_sampleMode)); // 키 유지
+  } catch (_) {}
 }
 
 /* -------------------------------------------------
@@ -30,33 +43,41 @@ const BASE_ORIGIN =
  * 3) axios 인스턴스
  * ------------------------------------------------- */
 export const http = axios.create({
-  baseURL: BASE_ORIGIN,
+  baseURL: BASE_ORIGIN, // dev에선 상대경로 → Vite 프록시
   timeout: 15000,
+  withCredentials: false,
 });
 
 /* -------------------------------------------------
- * 4) 토큰 부착
+ * 4) 요청 인터셉터: 토큰 부착
  * ------------------------------------------------- */
 http.interceptors.request.use((cfg) => {
   const t = localStorage.getItem("token");
-  if (t) cfg.headers.Authorization = `Bearer ${t}`;
+  if (t) {
+    cfg.headers = cfg.headers ?? {};
+    cfg.headers.Authorization = `Bearer ${t}`;
+  }
   return cfg;
 });
 
 /* -------------------------------------------------
- * 5) 401 처리
- *    - 샘플 모드일 땐 절대 세션 정리/리다이렉트 금지
+ * 5) 응답 인터셉터: 401 처리
+ *    - 샘플 모드일 때는 세션 정리/리다이렉트 하지 않음
  * ------------------------------------------------- */
 http.interceptors.response.use(
   (res) => res,
   (e) => {
     const status = e?.response?.status;
-    const here = window.location?.pathname || "";
+    const here = (typeof window !== "undefined" && window.location?.pathname) || "";
+
     if (!isSample() && status === 401 && !here.startsWith("/auth")) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/auth";
-      return;
+      try {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      } catch (_) {}
+      if (typeof window !== "undefined") {
+        window.location.assign("/auth");
+      }
     }
     return Promise.reject(e);
   }
