@@ -2,7 +2,7 @@
 import { http, isSample } from "./http";
 
 /* =========================
- * 공용 유틸
+ * 공용 유틸(주간 월간)
  * ========================= */
 function toYMD(input) {
   if (!input) return "";
