@@ -1,10 +1,12 @@
 // 📁 src/layouts/basicLayout.jsx
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import TopMenuComponent from "../components/menu/topMenu";
 import LeftMenuComponent from "../components/menu/leftMenu";
 // 리눅스: 실제 파일명이 alertContext.jsx면 아래 경로도 소문자로 맞추세요.
 import { useAlert } from "../contexts/alertContext";
+
+const DISMISS_KEY = "dismissedPeakActive"; // 이번 피크 이벤트(= isPeak true) 동안 유효
 
 function BasicLayout({ children }) {
   const { isPeak, peakTime } = useAlert();
@@ -13,35 +15,34 @@ function BasicLayout({ children }) {
 
   const isOnRealtime = location.pathname === "/realtime";
 
-  // 이벤트 키: 시간 기준 (백엔드가 시간 바꿔 내려주면 새 이벤트로 간주)
-  const eventKey = isPeak ? `peak@${peakTime ?? ""}` : "";
-
-  // 배너 닫힘 상태
+  // 배너 닫힘 상태 (세션 단위)
   const [bannerDismissed, setBannerDismissed] = useState(false);
-  const lastEventKeyRef = useRef("");
 
-  // 초기/이벤트 변경 시: 세션 스토리지에서 닫힘 상태 복원
+  // isPeak 변화에 따라 닫힘 상태 복원/초기화
   useEffect(() => {
-    if (eventKey !== lastEventKeyRef.current) {
-      lastEventKeyRef.current = eventKey;
-      const dismissedKey = sessionStorage.getItem("dismissedPeakEventKey") || "";
-      setBannerDismissed(!!eventKey && dismissedKey === eventKey ? true : false);
+    if (isPeak) {
+      // 피크 진행 중: 이전에 닫았으면 계속 닫힘 유지
+      const dismissed = sessionStorage.getItem(DISMISS_KEY) === "1";
+      setBannerDismissed(dismissed);
+    } else {
+      // 피크 종료: 다음 이벤트를 위해 닫힘 플래그 초기화
+      sessionStorage.removeItem(DISMISS_KEY);
+      setBannerDismissed(false);
     }
-  }, [eventKey]);
+  }, [isPeak]);
 
   const persistDismiss = () => {
-    if (eventKey) sessionStorage.setItem("dismissedPeakEventKey", eventKey);
+    // 이번 피크 이벤트 진행 중엔 계속 닫힌 상태 유지
+    sessionStorage.setItem(DISMISS_KEY, "1");
     setBannerDismissed(true);
   };
 
   // 배너 클릭: 실시간으로 이동(이미 그 페이지면 닫기만)
   const handleAlertClick = () => {
-    if (isOnRealtime) {
-      persistDismiss();
-      return;
-    }
     persistDismiss();
-    navigate("/realtime", { state: { scrollTo: "danger-zone" } });
+    if (!isOnRealtime) {
+      navigate("/realtime", { state: { scrollTo: "danger-zone" } });
+    }
   };
 
   // X 버튼: 닫기만 (이벤트 동안 유지)

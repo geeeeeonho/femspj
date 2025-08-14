@@ -16,7 +16,7 @@ import { http, isSample } from "./http";
  * ======================================================= */
 const FORCE_PEAK = null;         // ←★ 필요 시 true/false 로 강제
 const EMAIL_ENABLED = false;      // ←★ 메일 전송 on/off
-const DEFAULT_SAMPLE_PEAK = true; // ←★ 샘플 기본 피크값
+const DEFAULT_SAMPLE_PEAK = false; // ←★ 샘플 기본 피크값
 
 /**
  * 표준 응답 스키마
