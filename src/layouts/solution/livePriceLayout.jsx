@@ -1,4 +1,4 @@
-import LivePriceComponent from "../../components/realtime/livePrice";
+import LivePriceComponent from "../../components/solution/livePrice";
 
 function LivePriceLayoutComponent() {
   return (

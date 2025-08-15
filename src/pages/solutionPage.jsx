@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import AnalyzeLayoutComponent from "../layouts/solution/analyzeLayout";
+import LivePriceLayoutComponent from "../layouts/solution/livePriceLayout";
 import WorkSimulatorLayout from "../layouts/solution/workSimulatorLayout";
 
 function SolutionPage() {
@@ -25,11 +25,12 @@ function SolutionPage() {
     <div className="min-h-screen bg-gray-50 px-0">
       {/* 👉 오른쪽 고정 도우미 제거됨 */}
 
-      <section id="summary" className="pt-10">
+      
+      <section id="price" className="pt-20">
         <h2 className="text-lg font-bold mb-4 px-4 flex items-center gap-2">
-          🔎 분석 요약
+          💸 현재 전력 예상 요금
         </h2>
-        <AnalyzeLayoutComponent />
+        <LivePriceLayoutComponent />
       </section>
 
       <section id="simulator" className="pt-20">

@@ -17,10 +17,10 @@ function SolutionScrollHelperComponent() {
   return (
     <div className="w-full flex flex-col items-center divide-y divide-gray-600 text-white text-sm">
       <button
-        onClick={() => scrollToSection("summary")}
-        className="w-full py-2 text-center hover:bg-[rgba(255,255,255,0.1)] transition"
+        onClick={() => scrollToSection("price")}
+        className="w-full px-2 py-2 text-center hover:bg-[rgba(255,255,255,0.1)] transition"
       >
-        분석 요약
+        요금 예측
       </button>
 
       <button

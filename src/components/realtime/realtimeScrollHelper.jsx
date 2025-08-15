@@ -28,12 +28,6 @@ function RealtimeScrollHelperComponent() {
       >
         그래프
       </button>
-      <button
-        onClick={() => scrollToSection("price")}
-        className="w-full px-2 py-2 text-center hover:bg-[rgba(255,255,255,0.1)] transition"
-      >
-        요금 알림
-      </button>
     </div>
   );
 }
