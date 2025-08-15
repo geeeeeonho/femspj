@@ -1,5 +1,4 @@
-// 📁 src/components/setting/lineOrder/LineOrderEditor.jsx
-
+// 📁 src/components/setting/lineOrder/lineOrderEditor.jsx
 import React, { useState } from 'react';
 import { useLineOrder } from '../../../contexts/lineOrderContext';
 import LineOrderEditLine from './lineOrderEditLine';
@@ -8,10 +7,9 @@ import LineOrderEditInform from './lineOrderEditInform';
 
 export default function LineOrderEditor() {
   const { lineOrder, addLine, saveLineOrder, fetchLineOrder } = useLineOrder();
+
   // 각 라인의 펼침 상태 관리
-  const [openLines, setOpenLines] = useState(
-    () => lineOrder.map(() => true)
-  );
+  const [openLines, setOpenLines] = useState(() => lineOrder.map(() => true));
 
   const toggleLine = (idx) => {
     setOpenLines((prev) => {
@@ -22,13 +20,40 @@ export default function LineOrderEditor() {
   };
 
   const handleSave = async () => {
-    // 저장 전 각 라인별 중복 체크
+    // ★ 0) 라인 간 제품(productId) 중복 체크
+    // - 공백/빈값은 제외하고 비교
+    // - 중복 시 알림 후 저장 중단 (사용자가 바로 수정할 수 있도록 되돌리기는 하지 않음)
+    const seen = new Map(); // productId -> lineIndex
     for (let i = 0; i < lineOrder.length; i++) {
-      const equipment = lineOrder[i].equipment.map((name) => name.trim());
-      const duplicates = equipment.filter((name, idx) => equipment.indexOf(name) !== idx);
+      const pid = (lineOrder[i]?.productId ?? '').trim();
+      if (!pid) continue;
+
+      if (seen.has(pid)) {
+        // 중복 발견: 두 라인을 펼쳐서 바로 수정 가능하게
+        const otherIdx = seen.get(pid);
+        setOpenLines((prev) => {
+          const next = [...(prev.length === lineOrder.length ? prev : lineOrder.map(() => true))];
+          next[i] = true;
+          next[otherIdx] = true;
+          return next;
+        });
+        alert('다른 라인에 중복 제품이 있습니다.');
+        return;
+      }
+      seen.set(pid, i);
+    }
+
+    // 1) 각 라인 내부 설비 이름 중복 체크 (기존 로직 유지)
+    for (let i = 0; i < lineOrder.length; i++) {
+      const equipment = (lineOrder[i]?.equipment ?? []).map((name) => (name ?? '').trim());
+      const duplicates = equipment.filter((name, idx) => name && equipment.indexOf(name) !== idx);
       if (duplicates.length > 0) {
-        alert(`라인 ${lineOrder[i].lineId}에 중복된 설비 이름이 있습니다: ${[...new Set(duplicates)].join(", ")}`);
-        // 중복 시 서버 상태로 되돌리기
+        alert(
+          `라인 ${lineOrder[i].lineId}에 중복된 설비 이름이 있습니다: ${[
+            ...new Set(duplicates),
+          ].join(', ')}`
+        );
+        // 기존 동작 유지: 서버 상태로 되돌리기
         await fetchLineOrder();
         return;
       }
